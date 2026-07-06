@@ -1,0 +1,31 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Vite
+.vite/
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Misc
+*.local
