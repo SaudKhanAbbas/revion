@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import api from "../api/api";
+import { useAuth } from "../context/AuthContext";
+
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { fetchUser } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -28,6 +31,8 @@ export default function LoginPage() {
 
       localStorage.setItem("token", response.data.token);
 
+      await fetchUser();
+
       alert(response.data.message);
 
       navigate("/dashboard");
@@ -39,7 +44,9 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-950 px-6">
       <Card className="w-full max-w-xl p-10">
-        <h1 className="text-5xl font-bold">Welcome Back</h1>
+        <h1 className="text-5xl font-bold text-white">
+          Welcome Back
+        </h1>
 
         <p className="mt-4 text-zinc-400">
           Sign in to continue to Revion.
@@ -60,7 +67,7 @@ export default function LoginPage() {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 outline-none focus:border-white"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 text-white outline-none focus:border-white"
               required
             />
           </div>
@@ -76,7 +83,7 @@ export default function LoginPage() {
               value={formData.password}
               onChange={handleChange}
               placeholder="********"
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 outline-none focus:border-white"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 text-white outline-none focus:border-white"
               required
             />
           </div>
@@ -90,12 +97,12 @@ export default function LoginPage() {
 
           <p className="text-center text-zinc-400">
             Don't have an account?{" "}
-            <a
-              href="/signup"
-              className="font-semibold text-white"
+            <Link
+              to="/signup"
+              className="font-semibold text-white hover:underline"
             >
               Create one
-            </a>
+            </Link>
           </p>
         </form>
       </Card>
