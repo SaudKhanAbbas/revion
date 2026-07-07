@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import Button from "../components/ui/Button";
 import Container from "../components/layout/Container";
 import Footer from "../components/layout/Footer";
@@ -10,24 +12,39 @@ export default function LandingPage() {
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <Container>
         <nav className="flex h-20 items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">
-            Revion
-          </h1>
+          <Link to="/">
+            <h1 className="text-2xl font-bold tracking-tight">
+              Revion
+            </h1>
+          </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            <a href="#" className="text-sm text-zinc-400 hover:text-white">
+            <a
+              href="#features"
+              className="text-sm text-zinc-400 hover:text-white"
+            >
               Features
             </a>
 
-            <a href="#" className="text-sm text-zinc-400 hover:text-white">
+            <a
+              href="#about"
+              className="text-sm text-zinc-400 hover:text-white"
+            >
               About
             </a>
 
-            <a href="#" className="text-sm text-zinc-400 hover:text-white">
+            <a
+              href="https://github.com/SaudKhanAbbas/revion"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-zinc-400 hover:text-white"
+            >
               GitHub
             </a>
 
-            <Button>Get Started</Button>
+            <Link to="/signup">
+              <Button>Get Started</Button>
+            </Link>
           </div>
         </nav>
       </Container>
@@ -50,11 +67,19 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-10 flex gap-4">
-            <Button>Get Started</Button>
+            <Link to="/signup">
+              <Button>Get Started</Button>
+            </Link>
 
-            <Button variant="secondary">
-              View GitHub
-            </Button>
+            <a
+              href="https://github.com/SaudKhanAbbas/revion"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="secondary">
+                View GitHub
+              </Button>
+            </a>
           </div>
 
           <DashboardPreview />

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import AuthInput from "../components/auth/AuthInput";
@@ -18,13 +20,13 @@ export default function LoginPage() {
           <AuthInput
             label="Email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="Enter your email"
           />
 
           <AuthInput
             label="Password"
             type="password"
-            placeholder="••••••••"
+            placeholder="Enter your password"
           />
 
           <Button className="w-full">
@@ -34,9 +36,12 @@ export default function LoginPage() {
 
         <p className="mt-8 text-center text-sm text-zinc-500">
           Don't have an account?{" "}
-          <span className="cursor-pointer text-white">
+          <Link
+            to="/signup"
+            className="font-medium text-white hover:underline"
+          >
             Create one
-          </span>
+          </Link>
         </p>
       </Card>
     </main>
