@@ -2,18 +2,28 @@ import { useEffect, useState } from "react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import Button from "../components/ui/Button";
+
 import AddMaintenanceModal from "../components/maintenance/AddMaintenanceModal";
+import EditMaintenanceModal from "../components/maintenance/EditMaintenanceModal";
+import MaintenanceCard from "../components/maintenance/MaintenanceCard";
 
 import { getMotorcycles } from "../api/motorcycleApi";
+
 import {
   getMaintenanceLogs,
   createMaintenance,
+  updateMaintenance,
+  deleteMaintenance,
 } from "../api/maintenanceApi";
 
 export default function MaintenancePage() {
   const [motorcycles, setMotorcycles] = useState([]);
   const [maintenanceLogs, setMaintenanceLogs] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedLog, setSelectedLog] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -35,10 +45,42 @@ export default function MaintenancePage() {
     try {
       await createMaintenance(maintenanceData);
       await fetchData();
-      setIsModalOpen(false);
+      setIsAddModalOpen(false);
     } catch (error) {
       console.error(error);
       alert("Failed to create maintenance log.");
+    }
+  };
+
+  const handleEditClick = (log) => {
+    setSelectedLog(log);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateMaintenance = async (id, data) => {
+    try {
+      await updateMaintenance(id, data);
+      await fetchData();
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update maintenance.");
+    }
+  };
+
+  const handleDeleteMaintenance = async (log) => {
+    const confirmed = window.confirm(
+      `Delete "${log.serviceType}" maintenance record?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteMaintenance(log._id);
+      await fetchData();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete maintenance.");
     }
   };
 
@@ -55,7 +97,7 @@ export default function MaintenancePage() {
           </p>
         </div>
 
-        <Button onClick={() => setIsModalOpen(true)}>
+        <Button onClick={() => setIsAddModalOpen(true)}>
           + Add Maintenance
         </Button>
       </div>
@@ -73,42 +115,29 @@ export default function MaintenancePage() {
       ) : (
         <div className="mt-8 space-y-4">
           {maintenanceLogs.map((log) => (
-            <div
+            <MaintenanceCard
               key={log._id}
-              className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6"
-            >
-              <h3 className="text-xl font-semibold text-white">
-                {log.serviceType}
-              </h3>
-
-              <p className="mt-2 text-zinc-400">
-                {log.motorcycle.manufacturer}{" "}
-                {log.motorcycle.model}
-              </p>
-
-              <p className="mt-2 text-zinc-300">
-                Mileage: {log.mileage.toLocaleString()} km
-              </p>
-
-              <p className="text-zinc-300">
-                Cost: ₹{log.cost}
-              </p>
-
-              {log.description && (
-                <p className="mt-2 text-zinc-400">
-                  {log.description}
-                </p>
-              )}
-            </div>
+              log={log}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteMaintenance}
+            />
           ))}
         </div>
       )}
 
       <AddMaintenanceModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         motorcycles={motorcycles}
         onCreate={handleCreateMaintenance}
+      />
+
+      <EditMaintenanceModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        log={selectedLog}
+        motorcycles={motorcycles}
+        onUpdate={handleUpdateMaintenance}
       />
     </DashboardLayout>
   );
