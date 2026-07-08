@@ -1,4 +1,9 @@
-export default function MotorcycleCard({ motorcycle }) {
+import Button from "../ui/Button";
+
+export default function MotorcycleCard({
+  motorcycle,
+  onEdit,
+}) {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg transition hover:border-zinc-700">
       <div className="flex items-center justify-between">
@@ -32,6 +37,12 @@ export default function MotorcycleCard({ motorcycle }) {
           <span className="font-semibold">Health Score:</span>{" "}
           {motorcycle.healthScore}/100
         </p>
+      </div>
+
+      <div className="mt-6">
+        <Button onClick={() => onEdit(motorcycle)}>
+          Edit
+        </Button>
       </div>
     </div>
   );

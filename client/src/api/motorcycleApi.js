@@ -13,3 +13,15 @@ export const createMotorcycle = async (motorcycleData) => {
 
   return response.data;
 };
+
+export const updateMotorcycle = async (
+  id,
+  motorcycleData
+) => {
+  const response = await api.put(
+    `/motorcycles/${id}`,
+    motorcycleData
+  );
+
+  return response.data;
+};

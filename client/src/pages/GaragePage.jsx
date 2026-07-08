@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+
 import MotorcycleCard from "../components/garage/MotorcycleCard";
 import AddMotorcycleModal from "../components/garage/AddMotorcycleModal";
+import EditMotorcycleModal from "../components/garage/EditMotorcycleModal";
 
 import {
   getMotorcycles,
   createMotorcycle,
+  updateMotorcycle,
 } from "../api/motorcycleApi";
 
 import Button from "../components/ui/Button";
@@ -14,7 +17,11 @@ import Button from "../components/ui/Button";
 export default function GaragePage() {
   const [motorcycles, setMotorcycles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedMotorcycle, setSelectedMotorcycle] = useState(null);
 
   const fetchMotorcycles = async () => {
     try {
@@ -41,6 +48,21 @@ export default function GaragePage() {
     }
   };
 
+  const handleEditClick = (motorcycle) => {
+    setSelectedMotorcycle(motorcycle);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateMotorcycle = async (id, motorcycleData) => {
+    try {
+      await updateMotorcycle(id, motorcycleData);
+      await fetchMotorcycles();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update motorcycle.");
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
@@ -54,7 +76,7 @@ export default function GaragePage() {
           </p>
         </div>
 
-        <Button onClick={() => setIsModalOpen(true)}>
+        <Button onClick={() => setIsAddModalOpen(true)}>
           + Add Motorcycle
         </Button>
       </div>
@@ -79,15 +101,23 @@ export default function GaragePage() {
             <MotorcycleCard
               key={motorcycle._id}
               motorcycle={motorcycle}
+              onEdit={handleEditClick}
             />
           ))}
         </div>
       )}
 
       <AddMotorcycleModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         onCreate={handleCreateMotorcycle}
+      />
+
+      <EditMotorcycleModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        motorcycle={selectedMotorcycle}
+        onUpdate={handleUpdateMotorcycle}
       />
     </DashboardLayout>
   );
