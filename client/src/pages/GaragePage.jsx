@@ -2,26 +2,44 @@ import { useEffect, useState } from "react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import MotorcycleCard from "../components/garage/MotorcycleCard";
-import { getMotorcycles } from "../api/motorcycleApi";
+import AddMotorcycleModal from "../components/garage/AddMotorcycleModal";
+
+import {
+  getMotorcycles,
+  createMotorcycle,
+} from "../api/motorcycleApi";
+
+import Button from "../components/ui/Button";
 
 export default function GaragePage() {
   const [motorcycles, setMotorcycles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchMotorcycles = async () => {
+    try {
+      const data = await getMotorcycles();
+      setMotorcycles(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchMotorcycles = async () => {
-      try {
-        const data = await getMotorcycles();
-        setMotorcycles(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchMotorcycles();
   }, []);
+
+  const handleCreateMotorcycle = async (motorcycleData) => {
+    try {
+      await createMotorcycle(motorcycleData);
+      await fetchMotorcycles();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create motorcycle.");
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -35,10 +53,16 @@ export default function GaragePage() {
             Manage all your motorcycles in one place.
           </p>
         </div>
+
+        <Button onClick={() => setIsModalOpen(true)}>
+          + Add Motorcycle
+        </Button>
       </div>
 
       {loading ? (
-        <p className="text-zinc-400">Loading motorcycles...</p>
+        <p className="text-zinc-400">
+          Loading motorcycles...
+        </p>
       ) : motorcycles.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-12 text-center">
           <h2 className="text-2xl font-semibold text-white">
@@ -46,7 +70,7 @@ export default function GaragePage() {
           </h2>
 
           <p className="mt-3 text-zinc-400">
-            Add your first motorcycle in the next step.
+            Add your first motorcycle.
           </p>
         </div>
       ) : (
@@ -59,6 +83,12 @@ export default function GaragePage() {
           ))}
         </div>
       )}
+
+      <AddMotorcycleModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreate={handleCreateMotorcycle}
+      />
     </DashboardLayout>
   );
 }
