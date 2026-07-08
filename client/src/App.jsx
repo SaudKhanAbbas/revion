@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import GaragePage from "./pages/GaragePage";
+import MaintenancePage from "./pages/MaintenancePage";
 
 function App() {
   return (
@@ -15,6 +16,10 @@ function App() {
 
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/garage" element={<GaragePage />} />
+      <Route
+        path="/maintenance"
+        element={<MaintenancePage />}
+      />
     </Routes>
   );
 }

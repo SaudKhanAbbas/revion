@@ -6,8 +6,6 @@ const links = [
   { name: "Maintenance", path: "/maintenance" },
   { name: "Expenses", path: "/expenses" },
   { name: "AI Diagnosis", path: "/diagnosis" },
-  { name: "Community", path: "/community" },
-  { name: "Settings", path: "/settings" },
 ];
 
 export default function Sidebar() {
