@@ -3,6 +3,7 @@ import Button from "../ui/Button";
 export default function MotorcycleCard({
   motorcycle,
   onEdit,
+  onDelete,
 }) {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg transition hover:border-zinc-700">
@@ -39,9 +40,16 @@ export default function MotorcycleCard({
         </p>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 flex gap-3">
         <Button onClick={() => onEdit(motorcycle)}>
           Edit
+        </Button>
+
+        <Button
+          variant="danger"
+          onClick={() => onDelete(motorcycle)}
+        >
+          Delete
         </Button>
       </div>
     </div>

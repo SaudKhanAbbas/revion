@@ -10,6 +10,7 @@ import {
   getMotorcycles,
   createMotorcycle,
   updateMotorcycle,
+  deleteMotorcycle,
 } from "../api/motorcycleApi";
 
 import Button from "../components/ui/Button";
@@ -63,6 +64,22 @@ export default function GaragePage() {
     }
   };
 
+  const handleDeleteMotorcycle = async (motorcycle) => {
+    const confirmed = window.confirm(
+      `Delete ${motorcycle.manufacturer} ${motorcycle.model}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteMotorcycle(motorcycle._id);
+      await fetchMotorcycles();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete motorcycle.");
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
@@ -102,6 +119,7 @@ export default function GaragePage() {
               key={motorcycle._id}
               motorcycle={motorcycle}
               onEdit={handleEditClick}
+              onDelete={handleDeleteMotorcycle}
             />
           ))}
         </div>

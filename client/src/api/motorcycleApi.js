@@ -25,3 +25,11 @@ export const updateMotorcycle = async (
 
   return response.data;
 };
+
+export const deleteMotorcycle = async (id) => {
+  const response = await api.delete(
+    `/motorcycles/${id}`
+  );
+
+  return response.data;
+};
