@@ -8,11 +8,13 @@ import GaragePage from "./pages/GaragePage";
 import MaintenancePage from "./pages/MaintenancePage";
 import ExpensesPage from "./pages/ExpensesPage";
 import DiagnosisPage from "./pages/DiagnosisPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
 
@@ -21,6 +23,8 @@ function App() {
       <Route path="/maintenance" element={<MaintenancePage />} />
       <Route path="/expenses" element={<ExpensesPage />} />
       <Route path="/diagnosis" element={<DiagnosisPage />} />
+
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

@@ -4,18 +4,22 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Button from "../components/ui/Button";
 
 import { diagnoseMotorcycle } from "../api/diagnosisApi";
+import { useToast } from "../context/ToastContext";
 
 export default function DiagnosisPage() {
   const [symptom, setSymptom] = useState("");
-
   const [result, setResult] = useState(null);
-
   const [loading, setLoading] = useState(false);
+
+  const { showToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!symptom.trim()) return;
+    if (!symptom.trim()) {
+      showToast("Please enter a symptom.", "error");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -23,9 +27,18 @@ export default function DiagnosisPage() {
       const data = await diagnoseMotorcycle(symptom);
 
       setResult(data);
+
+      showToast(
+        "Diagnosis completed successfully.",
+        "success"
+      );
     } catch (error) {
       console.error(error);
-      alert("Diagnosis failed.");
+
+      showToast(
+        "Diagnosis failed. Please try again.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -97,8 +110,7 @@ export default function DiagnosisPage() {
                 className={`inline-block rounded-xl px-4 py-2 font-semibold ${
                   result.severity === "High"
                     ? "bg-red-500/20 text-red-400"
-                    : result.severity ===
-                      "Medium"
+                    : result.severity === "Medium"
                     ? "bg-yellow-500/20 text-yellow-400"
                     : "bg-zinc-700 text-zinc-300"
                 }`}
