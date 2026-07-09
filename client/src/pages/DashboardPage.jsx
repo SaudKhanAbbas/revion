@@ -32,6 +32,22 @@ export default function DashboardPage() {
     );
   }
 
+  const healthScore = dashboardData.stats.averageHealthScore;
+
+  const healthColor =
+    healthScore >= 80
+      ? "text-green-400"
+      : healthScore >= 60
+      ? "text-yellow-400"
+      : "text-red-400";
+
+  const progressColor =
+    healthScore >= 80
+      ? "bg-green-400"
+      : healthScore >= 60
+      ? "bg-yellow-400"
+      : "bg-red-400";
+
   return (
     <DashboardLayout>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -79,16 +95,25 @@ export default function DashboardPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Card>
           <h3 className="text-xl font-semibold text-white">
-            Average Health Score
+            Motorcycle Health
           </h3>
 
-          <p className="mt-4 text-6xl font-bold text-green-400">
-            {dashboardData.stats.averageHealthScore}
+          <p className={`mt-4 text-6xl font-bold ${healthColor}`}>
+            {healthScore}
           </p>
 
           <p className="mt-2 text-zinc-400">
             out of 100
           </p>
+
+          <div className="mt-6 h-3 overflow-hidden rounded-full bg-zinc-800">
+            <div
+              className={`h-full transition-all duration-500 ${progressColor}`}
+              style={{
+                width: `${healthScore}%`,
+              }}
+            />
+          </div>
         </Card>
 
         <Card>

@@ -25,15 +25,35 @@ export const getDashboardData = async (req, res) => {
       0
     );
 
-    const averageHealthScore =
-      totalMotorcycles === 0
-        ? 0
-        : Math.round(
-            motorcycles.reduce(
-              (sum, bike) => sum + bike.healthScore,
-              0
-            ) / totalMotorcycles
-          );
+    let totalHealthScore = 0;
+
+for (const bike of motorcycles) {
+  const maintenanceCount = maintenanceLogs.filter(
+    (log) => log.motorcycle.toString() === bike._id.toString()
+  ).length;
+
+  let score = 100;
+
+  const bikeAge =
+    new Date().getFullYear() - bike.year;
+
+  score -= bikeAge * 2;
+
+  if (maintenanceCount === 0) {
+    score -= 15;
+  }
+
+  score = Math.max(score, 0);
+
+  totalHealthScore += score;
+}
+
+const averageHealthScore =
+  totalMotorcycles === 0
+    ? 0
+    : Math.round(
+        totalHealthScore / totalMotorcycles
+      );
 
     const latestMotorcycle =
       motorcycles.length > 0 ? motorcycles[0] : null;
