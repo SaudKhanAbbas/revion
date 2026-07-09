@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 
 import { getDashboardData } from "../api/dashboardApi";
 
@@ -13,6 +14,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+
+import { useNavigate } from "react-router-dom";
 
 const COLORS = [
   "#22c55e",
@@ -26,6 +29,8 @@ const COLORS = [
 ];
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
+
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -138,58 +143,22 @@ export default function DashboardPage() {
 
         <Card>
           <h3 className="text-xl font-semibold text-white">
-            Latest Motorcycle
-          </h3>
-
-          {dashboardData.latestMotorcycle ? (
-            <div className="mt-4 space-y-2 text-zinc-300">
-              <p>
-                <strong>Manufacturer:</strong>{" "}
-                {dashboardData.latestMotorcycle.manufacturer}
-              </p>
-
-              <p>
-                <strong>Model:</strong>{" "}
-                {dashboardData.latestMotorcycle.model}
-              </p>
-
-              <p>
-                <strong>Year:</strong>{" "}
-                {dashboardData.latestMotorcycle.year}
-              </p>
-
-              <p>
-                <strong>Mileage:</strong>{" "}
-                {dashboardData.latestMotorcycle.mileage.toLocaleString()} km
-              </p>
-            </div>
-          ) : (
-            <p className="mt-4 text-zinc-400">
-              No motorcycles added yet.
-            </p>
-          )}
-        </Card>
-      </div>
-
-      <div className="mt-6">
-        <Card>
-          <h3 className="mb-6 text-xl font-semibold text-white">
             Expense Breakdown
           </h3>
 
           {dashboardData.expenseChartData.length === 0 ? (
-            <p className="text-zinc-400">
+            <p className="mt-6 text-zinc-400">
               No expense data available.
             </p>
           ) : (
-            <div className="h-96">
+            <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={dashboardData.expenseChartData}
                     dataKey="value"
                     nameKey="name"
-                    outerRadius={130}
+                    outerRadius={100}
                     label
                   >
                     {dashboardData.expenseChartData.map(
@@ -210,6 +179,118 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
           )}
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Card>
+          <h3 className="mb-4 text-xl font-semibold text-white">
+            Recent Maintenance
+          </h3>
+
+          {dashboardData.recentMaintenance.length === 0 ? (
+            <p className="text-zinc-400">
+              No maintenance yet.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {dashboardData.recentMaintenance.map(
+                (item) => (
+                  <div
+                    key={item._id}
+                    className="border-b border-zinc-800 pb-3"
+                  >
+                    <p className="font-medium text-white">
+                      {item.serviceType}
+                    </p>
+
+                    <p className="text-sm text-zinc-400">
+                      {item.motorcycle.manufacturer}{" "}
+                      {item.motorcycle.model}
+                    </p>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+        </Card>
+
+        <Card>
+          <h3 className="mb-4 text-xl font-semibold text-white">
+            Recent Expenses
+          </h3>
+
+          {dashboardData.recentExpenses.length === 0 ? (
+            <p className="text-zinc-400">
+              No expenses yet.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {dashboardData.recentExpenses.map(
+                (item) => (
+                  <div
+                    key={item._id}
+                    className="flex items-center justify-between border-b border-zinc-800 pb-3"
+                  >
+                    <div>
+                      <p className="font-medium text-white">
+                        {item.category}
+                      </p>
+
+                      <p className="text-sm text-zinc-400">
+                        {item.motorcycle.manufacturer}{" "}
+                        {item.motorcycle.model}
+                      </p>
+                    </div>
+
+                    <span className="font-semibold text-green-400">
+                      ₹{item.amount}
+                    </span>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      <div className="mt-6">
+        <Card>
+          <h3 className="mb-6 text-xl font-semibold text-white">
+            Quick Actions
+          </h3>
+
+          <div className="flex flex-wrap gap-4">
+            <Button
+              onClick={() => navigate("/garage")}
+            >
+              Garage
+            </Button>
+
+            <Button
+              onClick={() =>
+                navigate("/maintenance")
+              }
+            >
+              Maintenance
+            </Button>
+
+            <Button
+              onClick={() =>
+                navigate("/expenses")
+              }
+            >
+              Expenses
+            </Button>
+
+            <Button
+              onClick={() =>
+                navigate("/diagnosis")
+              }
+            >
+              AI Diagnosis
+            </Button>
+          </div>
         </Card>
       </div>
     </DashboardLayout>

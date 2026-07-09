@@ -10,11 +10,15 @@ export const getDashboardData = async (req, res) => {
 
     const maintenanceLogs = await Maintenance.find({
       owner: req.user._id,
-    });
+    })
+      .populate("motorcycle", "manufacturer model")
+      .sort({ serviceDate: -1 });
 
     const expenses = await Expense.find({
       owner: req.user._id,
-    });
+    })
+      .populate("motorcycle", "manufacturer model")
+      .sort({ expenseDate: -1 });
 
     const totalMotorcycles = motorcycles.length;
     const totalMaintenance = maintenanceLogs.length;
@@ -29,7 +33,8 @@ export const getDashboardData = async (req, res) => {
     for (const bike of motorcycles) {
       const maintenanceCount = maintenanceLogs.filter(
         (log) =>
-          log.motorcycle.toString() === bike._id.toString()
+          log.motorcycle._id.toString() ===
+          bike._id.toString()
       ).length;
 
       let score = 100;
@@ -65,7 +70,8 @@ export const getDashboardData = async (req, res) => {
         expenseBreakdown[expense.category] = 0;
       }
 
-      expenseBreakdown[expense.category] += expense.amount;
+      expenseBreakdown[expense.category] +=
+        expense.amount;
     });
 
     const expenseChartData = Object.entries(
@@ -88,6 +94,11 @@ export const getDashboardData = async (req, res) => {
       latestMotorcycle,
 
       expenseChartData,
+
+      recentMaintenance:
+        maintenanceLogs.slice(0, 5),
+
+      recentExpenses: expenses.slice(0, 5),
     });
   } catch (error) {
     res.status(500).json({
