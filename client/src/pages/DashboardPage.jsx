@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
+import SkeletonCard from "../components/ui/SkeletonCard";
 
 import { getDashboardData } from "../api/dashboardApi";
 
@@ -52,7 +53,26 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <p className="text-zinc-400">Loading dashboard...</p>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+
+        <div className="mt-6">
+          <SkeletonCard />
+        </div>
       </DashboardLayout>
     );
   }
@@ -80,7 +100,6 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-white">
             Welcome
           </h3>
-
           <p className="mt-2 text-zinc-400">
             {dashboardData.user.fullName}
           </p>
@@ -90,7 +109,6 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-white">
             Motorcycles
           </h3>
-
           <p className="mt-2 text-4xl font-bold text-white">
             {dashboardData.stats.totalMotorcycles}
           </p>
@@ -100,7 +118,6 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-white">
             Maintenance
           </h3>
-
           <p className="mt-2 text-4xl font-bold text-blue-400">
             {dashboardData.stats.totalMaintenance}
           </p>
@@ -110,7 +127,6 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-white">
             Total Expenses
           </h3>
-
           <p className="mt-2 text-4xl font-bold text-green-400">
             ₹{dashboardData.stats.totalExpenses.toLocaleString()}
           </p>
@@ -134,9 +150,7 @@ export default function DashboardPage() {
           <div className="mt-6 h-3 overflow-hidden rounded-full bg-zinc-800">
             <div
               className={`h-full transition-all duration-500 ${progressColor}`}
-              style={{
-                width: `${healthScore}%`,
-              }}
+              style={{ width: `${healthScore}%` }}
             />
           </div>
         </Card>
@@ -161,16 +175,12 @@ export default function DashboardPage() {
                     outerRadius={100}
                     label
                   >
-                    {dashboardData.expenseChartData.map(
-                      (_, index) => (
-                        <Cell
-                          key={index}
-                          fill={
-                            COLORS[index % COLORS.length]
-                          }
-                        />
-                      )
-                    )}
+                    {dashboardData.expenseChartData.map((_, index) => (
+                      <Cell
+                        key={index}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
                   </Pie>
 
                   <Tooltip />
@@ -189,28 +199,24 @@ export default function DashboardPage() {
           </h3>
 
           {dashboardData.recentMaintenance.length === 0 ? (
-            <p className="text-zinc-400">
-              No maintenance yet.
-            </p>
+            <p className="text-zinc-400">No maintenance yet.</p>
           ) : (
             <div className="space-y-4">
-              {dashboardData.recentMaintenance.map(
-                (item) => (
-                  <div
-                    key={item._id}
-                    className="border-b border-zinc-800 pb-3"
-                  >
-                    <p className="font-medium text-white">
-                      {item.serviceType}
-                    </p>
+              {dashboardData.recentMaintenance.map((item) => (
+                <div
+                  key={item._id}
+                  className="border-b border-zinc-800 pb-3"
+                >
+                  <p className="font-medium text-white">
+                    {item.serviceType}
+                  </p>
 
-                    <p className="text-sm text-zinc-400">
-                      {item.motorcycle.manufacturer}{" "}
-                      {item.motorcycle.model}
-                    </p>
-                  </div>
-                )
-              )}
+                  <p className="text-sm text-zinc-400">
+                    {item.motorcycle.manufacturer}{" "}
+                    {item.motorcycle.model}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </Card>
@@ -221,34 +227,30 @@ export default function DashboardPage() {
           </h3>
 
           {dashboardData.recentExpenses.length === 0 ? (
-            <p className="text-zinc-400">
-              No expenses yet.
-            </p>
+            <p className="text-zinc-400">No expenses yet.</p>
           ) : (
             <div className="space-y-4">
-              {dashboardData.recentExpenses.map(
-                (item) => (
-                  <div
-                    key={item._id}
-                    className="flex items-center justify-between border-b border-zinc-800 pb-3"
-                  >
-                    <div>
-                      <p className="font-medium text-white">
-                        {item.category}
-                      </p>
+              {dashboardData.recentExpenses.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center justify-between border-b border-zinc-800 pb-3"
+                >
+                  <div>
+                    <p className="font-medium text-white">
+                      {item.category}
+                    </p>
 
-                      <p className="text-sm text-zinc-400">
-                        {item.motorcycle.manufacturer}{" "}
-                        {item.motorcycle.model}
-                      </p>
-                    </div>
-
-                    <span className="font-semibold text-green-400">
-                      ₹{item.amount}
-                    </span>
+                    <p className="text-sm text-zinc-400">
+                      {item.motorcycle.manufacturer}{" "}
+                      {item.motorcycle.model}
+                    </p>
                   </div>
-                )
-              )}
+
+                  <span className="font-semibold text-green-400">
+                    ₹{item.amount}
+                  </span>
+                </div>
+              ))}
             </div>
           )}
         </Card>
@@ -261,33 +263,19 @@ export default function DashboardPage() {
           </h3>
 
           <div className="flex flex-wrap gap-4">
-            <Button
-              onClick={() => navigate("/garage")}
-            >
+            <Button onClick={() => navigate("/garage")}>
               Garage
             </Button>
 
-            <Button
-              onClick={() =>
-                navigate("/maintenance")
-              }
-            >
+            <Button onClick={() => navigate("/maintenance")}>
               Maintenance
             </Button>
 
-            <Button
-              onClick={() =>
-                navigate("/expenses")
-              }
-            >
+            <Button onClick={() => navigate("/expenses")}>
               Expenses
             </Button>
 
-            <Button
-              onClick={() =>
-                navigate("/diagnosis")
-              }
-            >
+            <Button onClick={() => navigate("/diagnosis")}>
               AI Diagnosis
             </Button>
           </div>
