@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <h3 className="text-lg font-semibold text-white">
             Welcome
@@ -47,26 +47,50 @@ export default function DashboardPage() {
 
         <Card>
           <h3 className="text-lg font-semibold text-white">
-            Average Health Score
-          </h3>
-
-          <p className="mt-2 text-4xl font-bold text-green-400">
-            {dashboardData.stats.averageHealthScore}
-          </p>
-        </Card>
-
-        <Card>
-          <h3 className="text-lg font-semibold text-white">
-            Total Motorcycles
+            Motorcycles
           </h3>
 
           <p className="mt-2 text-4xl font-bold text-white">
             {dashboardData.stats.totalMotorcycles}
           </p>
         </Card>
+
+        <Card>
+          <h3 className="text-lg font-semibold text-white">
+            Maintenance
+          </h3>
+
+          <p className="mt-2 text-4xl font-bold text-blue-400">
+            {dashboardData.stats.totalMaintenance}
+          </p>
+        </Card>
+
+        <Card>
+          <h3 className="text-lg font-semibold text-white">
+            Total Expenses
+          </h3>
+
+          <p className="mt-2 text-4xl font-bold text-green-400">
+            ₹{dashboardData.stats.totalExpenses.toLocaleString()}
+          </p>
+        </Card>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Card>
+          <h3 className="text-xl font-semibold text-white">
+            Average Health Score
+          </h3>
+
+          <p className="mt-4 text-6xl font-bold text-green-400">
+            {dashboardData.stats.averageHealthScore}
+          </p>
+
+          <p className="mt-2 text-zinc-400">
+            out of 100
+          </p>
+        </Card>
+
         <Card>
           <h3 className="text-xl font-semibold text-white">
             Latest Motorcycle
