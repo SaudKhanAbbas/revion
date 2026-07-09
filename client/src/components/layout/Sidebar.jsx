@@ -8,7 +8,9 @@ const links = [
   { name: "AI Diagnosis", path: "/diagnosis" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  closeSidebar = () => {},
+}) {
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-zinc-800 bg-zinc-950">
       <div className="border-b border-zinc-800 p-6">
@@ -22,6 +24,7 @@ export default function Sidebar() {
           <NavLink
             key={link.path}
             to={link.path}
+            onClick={closeSidebar}
             className={({ isActive }) =>
               `rounded-xl px-4 py-3 transition ${
                 isActive
