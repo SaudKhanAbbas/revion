@@ -17,7 +17,6 @@ export const getDashboardData = async (req, res) => {
     });
 
     const totalMotorcycles = motorcycles.length;
-
     const totalMaintenance = maintenanceLogs.length;
 
     const totalExpenses = expenses.reduce(
@@ -27,36 +26,54 @@ export const getDashboardData = async (req, res) => {
 
     let totalHealthScore = 0;
 
-for (const bike of motorcycles) {
-  const maintenanceCount = maintenanceLogs.filter(
-    (log) => log.motorcycle.toString() === bike._id.toString()
-  ).length;
+    for (const bike of motorcycles) {
+      const maintenanceCount = maintenanceLogs.filter(
+        (log) =>
+          log.motorcycle.toString() === bike._id.toString()
+      ).length;
 
-  let score = 100;
+      let score = 100;
 
-  const bikeAge =
-    new Date().getFullYear() - bike.year;
+      const bikeAge =
+        new Date().getFullYear() - bike.year;
 
-  score -= bikeAge * 2;
+      score -= bikeAge * 2;
 
-  if (maintenanceCount === 0) {
-    score -= 15;
-  }
+      if (maintenanceCount === 0) {
+        score -= 15;
+      }
 
-  score = Math.max(score, 0);
+      score = Math.max(score, 0);
 
-  totalHealthScore += score;
-}
+      totalHealthScore += score;
+    }
 
-const averageHealthScore =
-  totalMotorcycles === 0
-    ? 0
-    : Math.round(
-        totalHealthScore / totalMotorcycles
-      );
+    const averageHealthScore =
+      totalMotorcycles === 0
+        ? 0
+        : Math.round(
+            totalHealthScore / totalMotorcycles
+          );
 
     const latestMotorcycle =
       motorcycles.length > 0 ? motorcycles[0] : null;
+
+    const expenseBreakdown = {};
+
+    expenses.forEach((expense) => {
+      if (!expenseBreakdown[expense.category]) {
+        expenseBreakdown[expense.category] = 0;
+      }
+
+      expenseBreakdown[expense.category] += expense.amount;
+    });
+
+    const expenseChartData = Object.entries(
+      expenseBreakdown
+    ).map(([name, value]) => ({
+      name,
+      value,
+    }));
 
     res.json({
       user: req.user,
@@ -69,6 +86,8 @@ const averageHealthScore =
       },
 
       latestMotorcycle,
+
+      expenseChartData,
     });
   } catch (error) {
     res.status(500).json({

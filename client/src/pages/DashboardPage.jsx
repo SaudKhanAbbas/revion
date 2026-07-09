@@ -5,6 +5,26 @@ import Card from "../components/ui/Card";
 
 import { getDashboardData } from "../api/dashboardApi";
 
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
+
+const COLORS = [
+  "#22c55e",
+  "#3b82f6",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#06b6d4",
+  "#84cc16",
+  "#ec4899",
+];
+
 export default function DashboardPage() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -147,6 +167,48 @@ export default function DashboardPage() {
             <p className="mt-4 text-zinc-400">
               No motorcycles added yet.
             </p>
+          )}
+        </Card>
+      </div>
+
+      <div className="mt-6">
+        <Card>
+          <h3 className="mb-6 text-xl font-semibold text-white">
+            Expense Breakdown
+          </h3>
+
+          {dashboardData.expenseChartData.length === 0 ? (
+            <p className="text-zinc-400">
+              No expense data available.
+            </p>
+          ) : (
+            <div className="h-96">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={dashboardData.expenseChartData}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={130}
+                    label
+                  >
+                    {dashboardData.expenseChartData.map(
+                      (_, index) => (
+                        <Cell
+                          key={index}
+                          fill={
+                            COLORS[index % COLORS.length]
+                          }
+                        />
+                      )
+                    )}
+                  </Pie>
+
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           )}
         </Card>
       </div>
