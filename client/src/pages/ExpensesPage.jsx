@@ -2,18 +2,28 @@ import { useEffect, useState } from "react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import Button from "../components/ui/Button";
+
 import AddExpenseModal from "../components/expenses/AddExpenseModal";
+import EditExpenseModal from "../components/expenses/EditExpenseModal";
+import ExpenseCard from "../components/expenses/ExpenseCard";
 
 import { getMotorcycles } from "../api/motorcycleApi";
+
 import {
   getExpenses,
   createExpense,
+  updateExpense,
+  deleteExpense,
 } from "../api/expenseApi";
 
 export default function ExpensesPage() {
   const [motorcycles, setMotorcycles] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -35,10 +45,42 @@ export default function ExpensesPage() {
     try {
       await createExpense(expenseData);
       await fetchData();
-      setIsModalOpen(false);
+      setIsAddModalOpen(false);
     } catch (error) {
       console.error(error);
       alert("Failed to create expense.");
+    }
+  };
+
+  const handleEditClick = (expense) => {
+    setSelectedExpense(expense);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateExpense = async (id, expenseData) => {
+    try {
+      await updateExpense(id, expenseData);
+      await fetchData();
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update expense.");
+    }
+  };
+
+  const handleDeleteExpense = async (expense) => {
+    const confirmed = window.confirm(
+      `Delete this ${expense.category} expense?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteExpense(expense._id);
+      await fetchData();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete expense.");
     }
   };
 
@@ -55,7 +97,7 @@ export default function ExpensesPage() {
           </p>
         </div>
 
-        <Button onClick={() => setIsModalOpen(true)}>
+        <Button onClick={() => setIsAddModalOpen(true)}>
           + Add Expense
         </Button>
       </div>
@@ -73,48 +115,29 @@ export default function ExpensesPage() {
       ) : (
         <div className="mt-8 space-y-4">
           {expenses.map((expense) => (
-            <div
+            <ExpenseCard
               key={expense._id}
-              className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold text-white">
-                    {expense.category}
-                  </h3>
-
-                  <p className="text-zinc-400">
-                    {expense.motorcycle.manufacturer}{" "}
-                    {expense.motorcycle.model}
-                  </p>
-                </div>
-
-                <p className="text-2xl font-bold text-green-400">
-                  ₹{expense.amount}
-                </p>
-              </div>
-
-              {expense.description && (
-                <p className="mt-3 text-zinc-400">
-                  {expense.description}
-                </p>
-              )}
-
-              <p className="mt-3 text-sm text-zinc-500">
-                {new Date(
-                  expense.expenseDate
-                ).toLocaleDateString()}
-              </p>
-            </div>
+              expense={expense}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteExpense}
+            />
           ))}
         </div>
       )}
 
       <AddExpenseModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         motorcycles={motorcycles}
         onCreate={handleCreateExpense}
+      />
+
+      <EditExpenseModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        expense={selectedExpense}
+        motorcycles={motorcycles}
+        onUpdate={handleUpdateExpense}
       />
     </DashboardLayout>
   );
