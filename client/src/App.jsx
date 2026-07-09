@@ -7,6 +7,7 @@ import DashboardPage from "./pages/DashboardPage";
 import GaragePage from "./pages/GaragePage";
 import MaintenancePage from "./pages/MaintenancePage";
 import ExpensesPage from "./pages/ExpensesPage";
+import DiagnosisPage from "./pages/DiagnosisPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/garage" element={<GaragePage />} />
       <Route path="/maintenance" element={<MaintenancePage />} />
       <Route path="/expenses" element={<ExpensesPage />} />
+      <Route path="/diagnosis" element={<DiagnosisPage />} />
     </Routes>
   );
 }
