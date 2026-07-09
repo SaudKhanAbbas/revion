@@ -1,35 +1,23 @@
-import diagnosisData from "../data/diagnosisData.js";
+import { diagnoseWithGemini } from "../services/gemini.service.js";
 
 export const diagnoseMotorcycle = async (req, res) => {
   try {
     const { symptom } = req.body;
 
-    if (!symptom) {
+    if (!symptom?.trim()) {
       return res.status(400).json({
         message: "Symptom is required",
       });
     }
 
-    const input = symptom.toLowerCase();
+    const diagnosis = await diagnoseWithGemini(symptom);
 
-    const match = diagnosisData.find((item) =>
-      input.includes(item.symptom)
-    );
-
-    if (!match) {
-      return res.json({
-        diagnosis:
-          "Unable to determine the issue.",
-        recommendation:
-          "Please consult a qualified mechanic for a detailed inspection.",
-        severity: "Unknown",
-      });
-    }
-
-    res.json(match);
+    res.json(diagnosis);
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
-      message: error.message,
+      message: "Failed to generate AI diagnosis.",
     });
   }
 };

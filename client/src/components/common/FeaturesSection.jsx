@@ -25,22 +25,23 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="mt-32">
+    <section
+      id="features"
+      className="mt-32 scroll-mt-24"
+    >
       <h2 className="text-center text-4xl font-bold">
         Everything you need.
       </h2>
 
       <p className="mx-auto mt-4 max-w-2xl text-center text-zinc-400">
-        Revion brings together maintenance, diagnostics, analytics,
-        and expense tracking into one modern platform.
+        Revion brings together maintenance, diagnostics,
+        analytics, and expense tracking into one modern
+        platform.
       </p>
 
       <div className="mt-14 grid gap-6 md:grid-cols-2">
         {features.map((feature) => (
-          <Card
-            key={feature.title}
-            className="transition duration-300 hover:-translate-y-1 hover:border-zinc-700"
-          >
+          <Card key={feature.title}>
             <h3 className="text-xl font-semibold">
               {feature.title}
             </h3>
