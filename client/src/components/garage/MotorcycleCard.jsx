@@ -1,3 +1,13 @@
+import {
+  Bike,
+  Calendar,
+  Gauge,
+  HeartPulse,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+
+import Card from "../ui/Card";
 import Button from "../ui/Button";
 
 export default function MotorcycleCard({
@@ -5,53 +15,126 @@ export default function MotorcycleCard({
   onEdit,
   onDelete,
 }) {
+  const healthColor =
+    motorcycle.healthScore >= 80
+      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/20"
+      : motorcycle.healthScore >= 60
+      ? "bg-yellow-500/15 text-yellow-400 border-yellow-500/20"
+      : "bg-red-500/15 text-red-400 border-red-500/20";
+
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg transition hover:border-zinc-700">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">
-            {motorcycle.manufacturer}
-          </h2>
+    <Card className="group overflow-hidden p-0">
 
-          <p className="mt-1 text-zinc-400">
-            {motorcycle.model}
-          </p>
-        </div>
+      <div className="relative flex h-44 items-center justify-center border-b border-zinc-800 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black">
 
-        <div className="rounded-xl bg-zinc-800 px-3 py-2 text-sm text-zinc-300">
-          {motorcycle.year}
-        </div>
-      </div>
+        <Bike
+          size={90}
+          className="text-zinc-700 transition duration-300 group-hover:scale-110 group-hover:text-sky-400"
+        />
 
-      <div className="mt-6 space-y-2 text-zinc-300">
-        <p>
-          <span className="font-semibold">Engine:</span>{" "}
-          {motorcycle.engineCC} cc
-        </p>
-
-        <p>
-          <span className="font-semibold">Mileage:</span>{" "}
-          {motorcycle.mileage.toLocaleString()} km
-        </p>
-
-        <p>
-          <span className="font-semibold">Health Score:</span>{" "}
-          {motorcycle.healthScore}/100
-        </p>
-      </div>
-
-      <div className="mt-6 flex gap-3">
-        <Button onClick={() => onEdit(motorcycle)}>
-          Edit
-        </Button>
-
-        <Button
-          variant="danger"
-          onClick={() => onDelete(motorcycle)}
+        <div
+          className={`absolute right-5 top-5 rounded-full border px-4 py-2 text-sm font-semibold ${healthColor}`}
         >
-          Delete
-        </Button>
+          {motorcycle.healthScore}/100
+        </div>
+
       </div>
-    </div>
+
+      <div className="p-6">
+
+        <h2 className="text-2xl font-bold">
+          {motorcycle.manufacturer}
+        </h2>
+
+        <p className="mt-1 text-zinc-400">
+          {motorcycle.model}
+        </p>
+
+        <div className="mt-6 grid grid-cols-3 gap-3">
+
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-3 text-center">
+
+            <Calendar
+              size={18}
+              className="mx-auto text-sky-400"
+            />
+
+            <p className="mt-2 text-xs text-zinc-500">
+              Year
+            </p>
+
+            <p className="mt-1 font-semibold">
+              {motorcycle.year}
+            </p>
+
+          </div>
+
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-3 text-center">
+
+            <Gauge
+              size={18}
+              className="mx-auto text-orange-400"
+            />
+
+            <p className="mt-2 text-xs text-zinc-500">
+              Mileage
+            </p>
+
+            <p className="mt-1 font-semibold">
+              {motorcycle.mileage.toLocaleString()}
+            </p>
+
+          </div>
+
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-3 text-center">
+
+            <HeartPulse
+              size={18}
+              className="mx-auto text-emerald-400"
+            />
+
+            <p className="mt-2 text-xs text-zinc-500">
+              Engine
+            </p>
+
+            <p className="mt-1 font-semibold">
+              {motorcycle.engineCC}cc
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="mt-8 flex gap-3">
+
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => onEdit(motorcycle)}
+          >
+            <Pencil
+              size={16}
+              className="mr-2"
+            />
+            Edit
+          </Button>
+
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => onDelete(motorcycle)}
+          >
+            <Trash2
+              size={16}
+              className="mr-2"
+            />
+            Delete
+          </Button>
+
+        </div>
+
+      </div>
+
+    </Card>
   );
 }

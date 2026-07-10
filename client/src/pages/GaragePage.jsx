@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Search, Plus, Bike } from "lucide-react";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 
@@ -14,6 +15,8 @@ import {
 } from "../api/motorcycleApi";
 
 import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Card from "../components/ui/Card";
 
 export default function GaragePage() {
   const [motorcycles, setMotorcycles] = useState([]);
@@ -24,6 +27,7 @@ export default function GaragePage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const [selectedMotorcycle, setSelectedMotorcycle] =
     useState(null);
 
@@ -50,7 +54,9 @@ export default function GaragePage() {
         bike.manufacturer
           .toLowerCase()
           .includes(query) ||
-        bike.model.toLowerCase().includes(query)
+        bike.model
+          .toLowerCase()
+          .includes(query)
     );
   }, [motorcycles, search]);
 
@@ -104,51 +110,100 @@ export default function GaragePage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex items-center justify-between">
+
+      <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+
         <div>
-          <h1 className="text-4xl font-bold text-white">
-            My Garage
+
+          <p className="text-sm uppercase tracking-[0.3em] text-sky-400">
+            Garage
+          </p>
+
+          <h1 className="mt-3 text-5xl font-black tracking-tight">
+            Your Motorcycles
           </h1>
 
-          <p className="mt-2 text-zinc-400">
-            Manage all your motorcycles in one place.
+          <p className="mt-4 max-w-2xl text-lg text-zinc-400">
+            Organize every motorcycle you own,
+            monitor its health and keep every ride
+            in peak condition.
           </p>
+
         </div>
 
         <Button
+          variant="filled"
+          className="px-7 py-3"
           onClick={() => setIsAddModalOpen(true)}
         >
-          + Add Motorcycle
+          <Plus
+            size={18}
+            className="mr-2"
+          />
+
+          Add Motorcycle
         </Button>
+
       </div>
 
-      <input
-        type="text"
-        placeholder="Search motorcycles..."
-        value={search}
-        onChange={(e) =>
-          setSearch(e.target.value)
-        }
-        className="mb-8 w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-5 py-4 text-white outline-none"
-      />
+      <div className="relative mb-10">
+
+        <Search
+          size={18}
+          className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500"
+        />
+
+        <Input
+          placeholder="Search your garage..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="pl-14"
+        />
+
+      </div>
 
       {loading ? (
+
         <p className="text-zinc-400">
           Loading motorcycles...
         </p>
+
       ) : filteredMotorcycles.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-700 p-12 text-center">
-          <h2 className="text-2xl font-semibold text-white">
-            No motorcycles found
+
+        <Card className="py-20 text-center">
+
+          <Bike
+            size={60}
+            className="mx-auto text-zinc-700"
+          />
+
+          <h2 className="mt-6 text-3xl font-bold">
+            Your garage is empty.
           </h2>
 
-          <p className="mt-3 text-zinc-400">
-            Try a different search.
+          <p className="mx-auto mt-4 max-w-lg text-zinc-400">
+            Add your first motorcycle to start
+            tracking maintenance, expenses and
+            AI diagnostics.
           </p>
-        </div>
+
+          <Button
+            className="mt-8"
+            onClick={() =>
+              setIsAddModalOpen(true)
+            }
+          >
+            Add Motorcycle
+          </Button>
+
+        </Card>
+
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredMotorcycles.map((motorcycle) => (
+
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+                    {filteredMotorcycles.map((motorcycle) => (
             <MotorcycleCard
               key={motorcycle._id}
               motorcycle={motorcycle}
@@ -156,7 +211,9 @@ export default function GaragePage() {
               onDelete={handleDeleteMotorcycle}
             />
           ))}
+
         </div>
+
       )}
 
       <AddMotorcycleModal
@@ -175,6 +232,7 @@ export default function GaragePage() {
         motorcycle={selectedMotorcycle}
         onUpdate={handleUpdateMotorcycle}
       />
+
     </DashboardLayout>
   );
 }

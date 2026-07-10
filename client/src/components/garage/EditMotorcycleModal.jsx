@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { Bike, Save } from "lucide-react";
 
 import Button from "../ui/Button";
 import Card from "../ui/Card";
+import Input from "../ui/Input";
 
 export default function EditMotorcycleModal({
   isOpen,
@@ -30,10 +32,10 @@ export default function EditMotorcycleModal({
   }, [motorcycle]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -53,71 +55,117 @@ export default function EditMotorcycleModal({
   if (!isOpen || !motorcycle) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <Card className="w-full max-w-lg p-8">
-        <h2 className="text-3xl font-bold text-white">
-          Edit Motorcycle
-        </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-md">
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-          <input
-            name="manufacturer"
-            value={formData.manufacturer}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-4 text-white"
-            required
-          />
+      <Card className="w-full max-w-2xl">
 
-          <input
-            name="model"
-            value={formData.model}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-4 text-white"
-            required
-          />
+        <div className="flex items-center gap-4">
 
-          <input
-            type="number"
-            name="year"
-            value={formData.year}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-4 text-white"
-            required
-          />
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/10">
+            <Bike
+              size={28}
+              className="text-sky-400"
+            />
+          </div>
 
-          <input
-            type="number"
-            name="engineCC"
-            value={formData.engineCC}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-4 text-white"
-            required
-          />
+          <div>
 
-          <input
-            type="number"
-            name="mileage"
-            value={formData.mileage}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-4 text-white"
-            required
-          />
+            <h2 className="text-3xl font-bold">
+              Edit Motorcycle
+            </h2>
 
-          <div className="flex justify-end gap-3">
+            <p className="mt-1 text-zinc-400">
+              Update your motorcycle details.
+            </p>
+
+          </div>
+
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="mt-10"
+        >
+
+          <div className="grid gap-5 md:grid-cols-2">
+
+            <Input
+              label="Manufacturer"
+              name="manufacturer"
+              value={formData.manufacturer}
+              onChange={handleChange}
+              required
+            />
+
+            <Input
+              label="Model"
+              name="model"
+              value={formData.model}
+              onChange={handleChange}
+              required
+            />
+
+            <Input
+              label="Year"
+              name="year"
+              type="number"
+              value={formData.year}
+              onChange={handleChange}
+              required
+            />
+
+            <Input
+              label="Engine (CC)"
+              name="engineCC"
+              type="number"
+              value={formData.engineCC}
+              onChange={handleChange}
+              required
+            />
+
+            <div className="md:col-span-2">
+
+              <Input
+                label="Mileage"
+                name="mileage"
+                type="number"
+                value={formData.mileage}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+          </div>
+
+          <div className="mt-10 flex justify-end gap-4">
+
             <Button
               type="button"
-              variant="secondary"
+              variant="ghost"
               onClick={onClose}
             >
               Cancel
             </Button>
 
-            <Button type="submit">
+            <Button
+              type="submit"
+              variant="filled"
+            >
+              <Save
+                size={16}
+                className="mr-2"
+              />
+
               Save Changes
             </Button>
+
           </div>
+
         </form>
+
       </Card>
+
     </div>
   );
 }

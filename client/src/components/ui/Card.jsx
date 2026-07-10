@@ -1,28 +1,35 @@
+import { motion } from "framer-motion";
+
 export default function Card({
   children,
   className = "",
 }) {
   return (
-    <div
+    <motion.div
+      whileHover={{
+        y: -4,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 22,
+      }}
       className={`
-        rounded-2xl
+        rounded-3xl
         border
-        border-zinc-800/80
-        bg-zinc-900/70
+        border-zinc-800/70
+        bg-zinc-900/60
         p-6
-        shadow-xl
-        shadow-black/20
-        backdrop-blur-md
+        shadow-[0_8px_30px_rgba(0,0,0,0.25)]
+        backdrop-blur-xl
         transition-all
         duration-300
-        hover:-translate-y-1
-        hover:border-zinc-700
-        hover:shadow-2xl
-        hover:shadow-black/40
+        hover:border-sky-400/30
+        hover:shadow-[0_12px_40px_rgba(56,189,248,0.08)]
         ${className}
       `}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
