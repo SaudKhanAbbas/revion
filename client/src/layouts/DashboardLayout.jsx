@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -9,41 +11,88 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      <div className="border-b border-zinc-800 p-4 lg:hidden">
+
+      {/* Mobile Header */}
+
+      <div className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-zinc-950/80 px-5 py-4 backdrop-blur-xl lg:hidden">
+
+        <h1 className="text-xl font-black">
+          Revion
+        </h1>
+
         <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-white transition hover:border-sky-400"
+          onClick={() =>
+            setSidebarOpen((prev) => !prev)
+          }
+          className="rounded-xl border border-zinc-800 bg-zinc-900 p-2 transition hover:border-sky-400"
         >
-          ☰ Menu
+          {sidebarOpen ? (
+            <X size={22} />
+          ) : (
+            <Menu size={22} />
+          )}
         </button>
+
       </div>
 
-      <div className="flex">
-        <div
-          className={`fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 lg:static lg:translate-x-0 ${
-            sidebarOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
-          }`}
-        >
-          <Sidebar closeSidebar={() => setSidebarOpen(false)} />
-        </div>
+      {/* Fixed Desktop Sidebar */}
+
+      <div className="fixed inset-y-0 left-0 z-30 hidden lg:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Sidebar */}
+
+      <AnimatePresence>
 
         {sidebarOpen && (
-          <div
-            className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
+          <>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
+              onClick={() =>
+                setSidebarOpen(false)
+              }
+            />
+
+            <motion.div
+              initial={{ x: -320 }}
+              animate={{ x: 0 }}
+              exit={{ x: -320 }}
+              transition={{
+                type: "spring",
+                stiffness: 280,
+                damping: 28,
+              }}
+              className="fixed left-0 top-0 z-50 h-screen lg:hidden"
+            >
+              <Sidebar
+                closeSidebar={() =>
+                  setSidebarOpen(false)
+                }
+              />
+            </motion.div>
+
+          </>
         )}
 
-        <div className="flex min-h-screen flex-1 flex-col">
-          <Topbar />
+      </AnimatePresence>
 
-          <Page className="flex-1 p-4 sm:p-6 lg:p-8">
-            {children}
-          </Page>
-        </div>
+      {/* Main Content */}
+
+      <div className="flex min-h-screen flex-col lg:ml-72">
+
+        <Topbar />
+
+        <Page className="flex-1 p-4 sm:p-6 lg:p-8">
+          {children}
+        </Page>
+
       </div>
+
     </div>
   );
 }

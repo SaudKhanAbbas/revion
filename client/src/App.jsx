@@ -1,4 +1,9 @@
-import { Routes, Route } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
@@ -10,22 +15,122 @@ import ExpensesPage from "./pages/ExpensesPage";
 import DiagnosisPage from "./pages/DiagnosisPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
-function App() {
+function PageTransition({ children }) {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 12,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: -12,
+      }}
+      transition={{
+        duration: 0.25,
+        ease: "easeOut",
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+function App() {
+  const location = useLocation();
 
-      <Route path="/dashboard" element={<DashboardPage />} />
-      <Route path="/garage" element={<GaragePage />} />
-      <Route path="/maintenance" element={<MaintenancePage />} />
-      <Route path="/expenses" element={<ExpensesPage />} />
-      <Route path="/diagnosis" element={<DiagnosisPage />} />
+  return (
+    <AnimatePresence mode="wait">
+      <Routes
+        location={location}
+        key={location.pathname}
+      >
+        <Route
+          path="/"
+          element={
+            <PageTransition>
+              <LandingPage />
+            </PageTransition>
+          }
+        />
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route
+          path="/login"
+          element={
+            <PageTransition>
+              <LoginPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/signup"
+          element={
+            <PageTransition>
+              <SignupPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <PageTransition>
+              <DashboardPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/garage"
+          element={
+            <PageTransition>
+              <GaragePage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/maintenance"
+          element={
+            <PageTransition>
+              <MaintenancePage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/expenses"
+          element={
+            <PageTransition>
+              <ExpensesPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/diagnosis"
+          element={
+            <PageTransition>
+              <DiagnosisPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <PageTransition>
+              <NotFoundPage />
+            </PageTransition>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
   );
 }
 

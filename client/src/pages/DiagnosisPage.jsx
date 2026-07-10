@@ -1,24 +1,30 @@
 import { useState } from "react";
+import {
+  Brain,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  LoaderCircle,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 
 import { diagnoseMotorcycle } from "../api/diagnosisApi";
-import { useToast } from "../context/ToastContext";
 
 export default function DiagnosisPage() {
   const [symptom, setSymptom] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { showToast } = useToast();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!symptom.trim()) {
-      showToast("Please enter a symptom.", "error");
+      toast.error("Please describe your motorcycle issue.");
       return;
     }
 
@@ -29,136 +35,241 @@ export default function DiagnosisPage() {
 
       setResult(data);
 
-      showToast(
-        "Diagnosis completed successfully.",
-        "success"
-      );
+      toast.success("Diagnosis completed.");
     } catch (error) {
       console.error(error);
 
-      showToast(
-        "Diagnosis failed. Please try again.",
-        "error"
-      );
+      toast.error("Diagnosis failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  const severityColor = {
-    Low: "bg-green-500/20 text-green-400",
-    Medium: "bg-yellow-500/20 text-yellow-400",
-    High: "bg-red-500/20 text-red-400",
+  const severityStyles = {
+    Low: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20",
+    Medium:
+      "bg-yellow-500/15 text-yellow-400 border border-yellow-500/20",
+    High: "bg-red-500/15 text-red-400 border border-red-500/20",
   };
 
   return (
     <DashboardLayout>
-      <h1 className="text-4xl font-bold text-white">
-        AI Diagnosis
-      </h1>
 
-      <p className="mt-2 text-zinc-400">
-        Describe what's happening with your motorcycle.
-      </p>
+      <div className="mb-12">
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 space-y-4"
-      >
-        <textarea
-          value={symptom}
-          onChange={(e) =>
-            setSymptom(e.target.value)
-          }
-          placeholder="Example: My bike won't start and I hear a clicking sound..."
-          className="h-40 w-full rounded-2xl border border-zinc-700 bg-zinc-900 p-5 text-white outline-none"
-        />
+        <p className="text-sm uppercase tracking-[0.3em] text-violet-400">
+          Artificial Intelligence
+        </p>
 
-        <Button type="submit">
-          {loading
-            ? "Analyzing..."
-            : "Run Diagnosis"}
-        </Button>
-      </form>
+        <h1 className="mt-3 text-5xl font-black">
+          Smart Diagnosis
+        </h1>
 
-      {result && (
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <Card>
-            <h2 className="text-2xl font-bold text-white">
-              Diagnosis
+        <p className="mt-4 max-w-3xl text-lg text-zinc-400">
+          Explain your motorcycle's symptoms and let
+          Revion AI analyze possible causes and recommend
+          the next steps.
+        </p>
+
+      </div>
+
+      <Card>
+
+        <div className="flex items-center gap-4">
+
+          <div className="rounded-2xl bg-violet-500/10 p-4">
+            <Brain
+              size={30}
+              className="text-violet-400"
+            />
+          </div>
+
+          <div>
+
+            <h2 className="text-2xl font-bold">
+              Describe the problem
             </h2>
 
-            <p className="mt-4 text-zinc-300">
+            <p className="text-zinc-400">
+              Include sounds, warning lights,
+              vibrations or anything unusual.
+            </p>
+
+          </div>
+
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8"
+        >
+
+          <textarea
+            value={symptom}
+            onChange={(e) =>
+              setSymptom(e.target.value)
+            }
+            placeholder="Example: Motorcycle won't start, dashboard lights flicker and I hear a clicking sound..."
+            className="h-44 w-full rounded-2xl border border-zinc-800 bg-zinc-950 p-5 text-white outline-none transition focus:border-violet-500"
+          />
+
+          <Button
+            type="submit"
+            variant="filled"
+            className="mt-6"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <LoaderCircle
+                  size={18}
+                  className="mr-2 animate-spin"
+                />
+
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Sparkles
+                  size={18}
+                  className="mr-2"
+                />
+
+                Run AI Diagnosis
+              </>
+            )}
+          </Button>
+
+        </form>
+
+      </Card>
+
+      {result && (
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+
+          <Card>
+
+            <div className="flex items-center gap-3">
+
+              <Brain
+                size={22}
+                className="text-violet-400"
+              />
+
+              <h2 className="text-2xl font-bold">
+                Diagnosis
+              </h2>
+
+            </div>
+
+            <p className="mt-5 leading-8 text-zinc-300">
               {result.diagnosis}
             </p>
 
-            <div className="mt-6">
+            <div className="mt-8 flex items-center justify-between">
+
               <span
                 className={`rounded-xl px-4 py-2 font-semibold ${
-                  severityColor[result.severity]
+                  severityStyles[result.severity]
                 }`}
               >
-                {result.severity}
+                {result.severity} Severity
               </span>
+
+              <span className="text-zinc-400">
+                {result.confidence}% confidence
+              </span>
+
             </div>
 
-            <div className="mt-8">
-              <div className="mb-2 flex justify-between text-sm text-zinc-400">
-                <span>Confidence</span>
-                <span>{result.confidence}%</span>
-              </div>
+            <div className="mt-5 h-3 overflow-hidden rounded-full bg-zinc-800">
 
-              <div className="h-3 rounded-full bg-zinc-800">
-                <div
-                  className="h-full rounded-full bg-green-400 transition-all duration-500"
-                  style={{
-                    width: `${result.confidence}%`,
-                  }}
-                />
-              </div>
+              <div
+                className="h-full rounded-full bg-violet-500 transition-all duration-700"
+                style={{
+                  width: `${result.confidence}%`,
+                }}
+              />
+
             </div>
+
           </Card>
 
           <Card>
-            <h2 className="text-2xl font-bold text-white">
-              Possible Causes
-            </h2>
 
-            <ul className="mt-5 list-disc space-y-3 pl-5 text-zinc-300">
+            <div className="flex items-center gap-3">
+
+              <AlertTriangle
+                size={22}
+                className="text-orange-400"
+              />
+
+              <h2 className="text-2xl font-bold">
+                Possible Causes
+              </h2>
+
+            </div>
+
+            <div className="mt-6 space-y-4">
+
               {result.possibleCauses.map(
                 (cause, index) => (
-                  <li key={index}>{cause}</li>
+                  <div
+                    key={index}
+                    className="rounded-2xl border border-zinc-800 bg-zinc-950 p-4"
+                  >
+                    {cause}
+                  </div>
                 )
               )}
-            </ul>
+
+            </div>
+
           </Card>
 
           <Card className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-white">
-              Recommended Actions
-            </h2>
 
-            <div className="mt-5 space-y-4">
+            <div className="flex items-center gap-3">
+
+              <CheckCircle2
+                size={22}
+                className="text-emerald-400"
+              />
+
+              <h2 className="text-2xl font-bold">
+                Recommended Actions
+              </h2>
+
+            </div>
+
+            <div className="mt-8 space-y-5">
+
               {result.recommendation.map(
                 (step, index) => (
                   <div
                     key={index}
-                    className="flex gap-4"
+                    className="flex items-start gap-4 rounded-2xl border border-zinc-800 bg-zinc-950 p-5"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-black">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-500 font-bold">
                       {index + 1}
                     </div>
 
-                    <p className="flex-1 text-zinc-300">
+                    <p className="leading-7 text-zinc-300">
                       {step}
                     </p>
                   </div>
                 )
               )}
+
             </div>
+
           </Card>
+
         </div>
+
       )}
+
     </DashboardLayout>
   );
 }

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import { Plus, Wallet } from "lucide-react";
+import toast from "react-hot-toast";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+
 import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import ConfirmModal from "../components/ui/ConfirmModal";
 
 import AddExpenseModal from "../components/expenses/AddExpenseModal";
 import EditExpenseModal from "../components/expenses/EditExpenseModal";
@@ -21,9 +26,12 @@ export default function ExpensesPage() {
   const [expenses, setExpenses] = useState([]);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const [selectedExpense, setSelectedExpense] = useState(null);
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -34,6 +42,7 @@ export default function ExpensesPage() {
       setExpenses(expenseData);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load expenses.");
     }
   };
 
@@ -45,10 +54,12 @@ export default function ExpensesPage() {
     try {
       await createExpense(expenseData);
       await fetchData();
+
+      toast.success("Expense added.");
       setIsAddModalOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Failed to create expense.");
+      toast.error("Failed to add expense.");
     }
   };
 
@@ -61,59 +72,100 @@ export default function ExpensesPage() {
     try {
       await updateExpense(id, expenseData);
       await fetchData();
+
+      toast.success("Expense updated.");
       setIsEditModalOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Failed to update expense.");
+      toast.error("Failed to update expense.");
     }
   };
 
-  const handleDeleteExpense = async (expense) => {
-    const confirmed = window.confirm(
-      `Delete this ${expense.category} expense?`
-    );
+  const handleDeleteExpense = (expense) => {
+    setExpenseToDelete(expense);
+    setIsDeleteModalOpen(true);
+  };
 
-    if (!confirmed) return;
+  const confirmDeleteExpense = async () => {
+    if (!expenseToDelete) return;
 
     try {
-      await deleteExpense(expense._id);
+      await deleteExpense(expenseToDelete._id);
+
       await fetchData();
+
+      toast.success("Expense deleted.");
+
+      setExpenseToDelete(null);
+      setIsDeleteModalOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Failed to delete expense.");
+      toast.error("Failed to delete expense.");
     }
   };
 
   return (
     <DashboardLayout>
-      <div className="flex items-center justify-between">
+
+      <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+
         <div>
-          <h1 className="text-4xl font-bold text-white">
+
+          <p className="text-sm uppercase tracking-[0.3em] text-emerald-400">
             Expenses
+          </p>
+
+          <h1 className="mt-3 text-5xl font-black">
+            Expense Tracker
           </h1>
 
-          <p className="mt-2 text-zinc-400">
-            Track every expense related to your motorcycles.
+          <p className="mt-4 max-w-2xl text-lg text-zinc-400">
+            Track every rupee spent on fuel, maintenance,
+            insurance and accessories.
           </p>
+
         </div>
 
-        <Button onClick={() => setIsAddModalOpen(true)}>
-          + Add Expense
+        <Button
+          variant="filled"
+          onClick={() => setIsAddModalOpen(true)}
+        >
+          <Plus size={18} className="mr-2" />
+          Add Expense
         </Button>
+
       </div>
 
       {expenses.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-zinc-700 p-12 text-center">
-          <h2 className="text-2xl font-semibold text-white">
-            No expenses yet
+
+        <Card className="py-20 text-center">
+
+          <Wallet
+            size={60}
+            className="mx-auto text-zinc-700"
+          />
+
+          <h2 className="mt-6 text-3xl font-bold">
+            No expenses yet.
           </h2>
 
-          <p className="mt-3 text-zinc-400">
-            Add your first expense.
+          <p className="mt-4 text-zinc-400">
+            Start tracking your motorcycle spending.
           </p>
-        </div>
+
+          <Button
+            className="mt-8"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            Add Expense
+          </Button>
+
+        </Card>
+
       ) : (
-        <div className="mt-8 space-y-4">
+
+        <div className="space-y-6">
+
           {expenses.map((expense) => (
             <ExpenseCard
               key={expense._id}
@@ -122,7 +174,9 @@ export default function ExpensesPage() {
               onDelete={handleDeleteExpense}
             />
           ))}
+
         </div>
+
       )}
 
       <AddExpenseModal
@@ -139,6 +193,20 @@ export default function ExpensesPage() {
         motorcycles={motorcycles}
         onUpdate={handleUpdateExpense}
       />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Expense?"
+        message={`Delete "${expenseToDelete?.category ?? ""}" expense? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDeleteExpense}
+        onCancel={() => {
+          setExpenseToDelete(null);
+          setIsDeleteModalOpen(false);
+        }}
+      />
+
     </DashboardLayout>
   );
 }

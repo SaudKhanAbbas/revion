@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
+import {
+  Plus,
+  Wrench,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+
 import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import ConfirmModal from "../components/ui/ConfirmModal";
 
 import AddMaintenanceModal from "../components/maintenance/AddMaintenanceModal";
 import EditMaintenanceModal from "../components/maintenance/EditMaintenanceModal";
@@ -21,9 +29,16 @@ export default function MaintenancePage() {
   const [maintenanceLogs, setMaintenanceLogs] = useState([]);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedLog, setSelectedLog] = useState(null);
+
+  const [selectedLog, setSelectedLog] =
+    useState(null);
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] =
+    useState(false);
+
+  const [logToDelete, setLogToDelete] =
+    useState(null);
 
   const fetchData = async () => {
     try {
@@ -34,6 +49,7 @@ export default function MaintenancePage() {
       setMaintenanceLogs(logs);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load maintenance.");
     }
   };
 
@@ -41,14 +57,20 @@ export default function MaintenancePage() {
     fetchData();
   }, []);
 
-  const handleCreateMaintenance = async (maintenanceData) => {
+  const handleCreateMaintenance = async (
+    maintenanceData
+  ) => {
     try {
       await createMaintenance(maintenanceData);
+
       await fetchData();
+
+      toast.success("Maintenance added.");
+
       setIsAddModalOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Failed to create maintenance log.");
+      toast.error("Failed to add maintenance.");
     }
   };
 
@@ -57,88 +79,166 @@ export default function MaintenancePage() {
     setIsEditModalOpen(true);
   };
 
-  const handleUpdateMaintenance = async (id, data) => {
+  const handleUpdateMaintenance = async (
+    id,
+    data
+  ) => {
     try {
       await updateMaintenance(id, data);
+
       await fetchData();
+
+      toast.success("Maintenance updated.");
+
       setIsEditModalOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Failed to update maintenance.");
+      toast.error("Failed to update maintenance.");
     }
   };
 
-  const handleDeleteMaintenance = async (log) => {
-    const confirmed = window.confirm(
-      `Delete "${log.serviceType}" maintenance record?`
-    );
+  const handleDeleteMaintenance = (log) => {
+    setLogToDelete(log);
+    setIsDeleteModalOpen(true);
+  };
 
-    if (!confirmed) return;
+  const confirmDeleteMaintenance = async () => {
+    if (!logToDelete) return;
 
     try {
-      await deleteMaintenance(log._id);
+      await deleteMaintenance(logToDelete._id);
+
       await fetchData();
+
+      toast.success("Maintenance deleted.");
+
+      setIsDeleteModalOpen(false);
+      setLogToDelete(null);
     } catch (error) {
       console.error(error);
-      alert("Failed to delete maintenance.");
+      toast.error("Failed to delete maintenance.");
     }
   };
 
   return (
     <DashboardLayout>
-      <div className="flex items-center justify-between">
+
+      <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+
         <div>
-          <h1 className="text-4xl font-bold text-white">
+
+          <p className="text-sm uppercase tracking-[0.3em] text-sky-400">
             Maintenance
+          </p>
+
+          <h1 className="mt-3 text-5xl font-black">
+            Service History
           </h1>
 
-          <p className="mt-2 text-zinc-400">
-            Track every service your motorcycles receive.
+          <p className="mt-4 max-w-2xl text-lg text-zinc-400">
+            Keep a complete history of every
+            service your motorcycles receive.
           </p>
+
         </div>
 
-        <Button onClick={() => setIsAddModalOpen(true)}>
-          + Add Maintenance
+        <Button
+          variant="filled"
+          onClick={() =>
+            setIsAddModalOpen(true)
+          }
+        >
+          <Plus
+            size={18}
+            className="mr-2"
+          />
+
+          Add Maintenance
+
         </Button>
+
       </div>
 
       {maintenanceLogs.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-zinc-700 p-12 text-center">
-          <h2 className="text-2xl font-semibold text-white">
-            No maintenance logs yet
+
+        <Card className="py-20 text-center">
+
+          <Wrench
+            size={60}
+            className="mx-auto text-zinc-700"
+          />
+
+          <h2 className="mt-6 text-3xl font-bold">
+            No maintenance records.
           </h2>
 
-          <p className="mt-3 text-zinc-400">
-            Add your first maintenance record.
+          <p className="mt-4 text-zinc-400">
+            Start tracking every service for
+            your motorcycles.
           </p>
-        </div>
+
+          <Button
+            className="mt-8"
+            onClick={() =>
+              setIsAddModalOpen(true)
+            }
+          >
+            Add Maintenance
+          </Button>
+
+        </Card>
+
       ) : (
-        <div className="mt-8 space-y-4">
+
+        <div className="space-y-6">
+
           {maintenanceLogs.map((log) => (
             <MaintenanceCard
               key={log._id}
               log={log}
               onEdit={handleEditClick}
-              onDelete={handleDeleteMaintenance}
+              onDelete={
+                handleDeleteMaintenance
+              }
             />
           ))}
+
         </div>
+
       )}
 
       <AddMaintenanceModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() =>
+          setIsAddModalOpen(false)
+        }
         motorcycles={motorcycles}
         onCreate={handleCreateMaintenance}
       />
 
       <EditMaintenanceModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() =>
+          setIsEditModalOpen(false)
+        }
         log={selectedLog}
         motorcycles={motorcycles}
         onUpdate={handleUpdateMaintenance}
       />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Maintenance?"
+        message={`Delete "${logToDelete?.serviceType ?? ""}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDeleteMaintenance}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setLogToDelete(null);
+        }}
+      />
+
     </DashboardLayout>
   );
 }

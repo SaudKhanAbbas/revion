@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import { useAuth } from "../../context/AuthContext";
-import { useToast } from "../../context/ToastContext";
 
 import Button from "../ui/Button";
 
@@ -9,14 +9,13 @@ export default function Topbar() {
   const { user, setUser } = useAuth();
 
   const navigate = useNavigate();
-  const { showToast } = useToast();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
 
     setUser(null);
 
-    showToast("Logged out successfully.");
+    toast.success("Logged out successfully.");
 
     navigate("/");
   };
