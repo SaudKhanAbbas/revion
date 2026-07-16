@@ -12,7 +12,6 @@ Revion is a full-stack motorcycle management platform built for riders to manage
 
 **Live Demo:** https://revion-seven.vercel.app/
 
-**Repository:** https://github.com/SaudKhanAbbas/revion
 
 ---
 
