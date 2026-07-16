@@ -6,7 +6,7 @@
 
 # Revion
 
-> A modern full-stack motorcycle management platform built with the MERN stack and Google Gemini AI.
+> Motorcycle management platform built with React, Node.js, and MongoDB, featuring AI-powered diagnostics using Google Gemini.
 
 Revion is a full-stack motorcycle management platform built for riders to manage their motorcycles, maintenance records, expenses, and AI-powered diagnostics from a single dashboard.
 
