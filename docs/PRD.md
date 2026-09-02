@@ -2,309 +2,189 @@
 
 # Revion
 
-Version: 1.0
-
+Version: 1.0  
 Author: Saud Khan Abbas
 
 ---
 
 # 1. Overview
 
-Revion is a full-stack motorcycle management platform designed to help riders manage every aspect of motorcycle ownership from a single application.
+Revion is a full-stack motorcycle management platform designed to help riders manage motorcycle information, maintenance records, expenses, and motorcycle problems from one application.
 
-The platform enables users to securely manage their motorcycles, track maintenance history, record expenses, and receive AI-powered diagnostic assistance through natural language descriptions.
+The application combines a React frontend, an Express.js backend, MongoDB Atlas, and the Google Gemini API. Users can securely create an account, manage their motorcycles, record maintenance and expenses, and submit a motorcycle symptom for AI-assisted diagnosis.
 
-Revion demonstrates modern full-stack web development by integrating authentication, REST APIs, cloud deployment, database management, and Generative AI into a single production-ready application.
+Revion is built as a client-server application. The frontend communicates with the backend through HTTP-based REST API requests, while MongoDB stores application data. The AI diagnosis feature uses the Google Gemini API as an external AI service.
+
+The main goal of the project is to demonstrate the development of a larger full-stack application involving frontend development, backend APIs, authentication, database modeling, CRUD operations, AI integration, and production deployment.
 
 ---
 
 # 2. Problem Statement
 
-Motorcycle owners often rely on multiple applications, spreadsheets, or handwritten notes to manage maintenance schedules, service history, and ownership expenses.
+Motorcycle ownership involves more than simply riding the motorcycle. Riders may need to remember maintenance history, track expenses, manage multiple vehicles, and investigate problems when symptoms occur.
 
-There is no centralized solution that combines motorcycle management with intelligent diagnostic assistance.
+This information is often scattered across bills, notes, service records, and different applications.
 
-Revion solves this problem by providing a single platform where riders can:
+Revion addresses this by providing a centralized platform where a user can:
 
-- Manage multiple motorcycles
-- Track maintenance records
-- Record expenses
-- Receive AI-generated diagnostic suggestions
-- Access all information securely from anywhere
+- Create an account and securely log in
+- Manage motorcycle information
+- Record maintenance activity
+- Track motorcycle-related expenses
+- View information through a dashboard
+- Describe a motorcycle problem in natural language
+- Receive an AI-generated diagnosis with possible causes and recommended actions
 
 ---
 
 # 3. Objectives
 
-The primary objectives of Revion are:
+The objectives of Revion are to:
 
-- Provide a centralized motorcycle management platform.
-- Enable users to manage multiple motorcycles securely.
-- Track maintenance history throughout a motorcycle's lifecycle.
-- Record and categorize ownership expenses.
-- Assist riders using AI-powered motorcycle diagnostics.
-- Demonstrate production-ready MERN stack development.
-- Deploy a scalable cloud-based application.
+- Provide a centralized platform for motorcycle management
+- Allow users to securely create and access personal accounts
+- Implement authentication using password hashing and JWT
+- Protect private API routes using authentication middleware
+- Allow users to create, read, update, and delete motorcycle-related data
+- Store application data using MongoDB and Mongoose schemas
+- Model relationships between users, motorcycles, maintenance records, and expenses
+- Integrate a Large Language Model API for motorcycle diagnosis
+- Use prompt engineering to request useful and structured AI responses
+- Provide a responsive frontend for desktop and mobile users
+- Deploy the application using cloud services
 
 ---
 
 # 4. Target Users
 
-Revion is designed for:
+## Motorcycle Owners
 
-- Motorcycle enthusiasts
-- Daily commuters
-- Touring riders
-- Motorcycle owners managing multiple bikes
-- Students learning full-stack software engineering
-- Developers exploring AI-powered applications
+Users who want to manage information about their motorcycles, maintenance, and expenses.
+
+## Riders
+
+Users who want a single application for keeping track of motorcycle-related records.
+
+## Motorcycle Enthusiasts
+
+Users interested in understanding possible causes of motorcycle symptoms using an AI-assisted diagnosis feature.
 
 ---
 
 # 5. User Stories
 
-### As a new user,
-
-I want to create an account
-
-So that my motorcycle data is securely stored.
-
----
-
-### As a returning user,
-
-I want to log in
-
-So that I can continue managing my motorcycles.
-
----
-
-### As a motorcycle owner,
-
-I want to add my motorcycles
-
-So that I can maintain separate records for each one.
-
----
-
-### As a motorcycle owner,
-
-I want to record maintenance activities
-
-So that I can maintain a complete service history.
-
----
-
-### As a motorcycle owner,
-
-I want to track expenses
-
-So that I understand the cost of owning each motorcycle.
-
----
-
-### As a motorcycle owner,
-
-I want to describe issues with my motorcycle
-
-So that I receive AI-generated diagnostic suggestions.
-
----
-
-### As a user,
-
-I want a responsive interface
-
-So that I can use Revion on desktop and mobile devices.
-
----
-
-# 6. Functional Requirements
-
 ## Authentication
 
-- User Registration
-- User Login
-- JWT Authentication
-- Protected Routes
-- Persistent User Sessions
+As a new user,  
+I want to create an account,  
+So that I can access my motorcycle information securely.
+
+As a returning user,  
+I want to log in,  
+So that I can access the data associated with my account.
+
+As an authenticated user,  
+I want my protected API requests to include my JWT,  
+So that the backend can verify my identity.
 
 ---
 
-## Dashboard
+## Motorcycle Management
 
-- Personalized dashboard
-- Motorcycle overview
-- Quick navigation
-- Analytics summary
+As a user,  
+I want to add a motorcycle,  
+So that I can manage its information.
 
----
+As a user,  
+I want to view my motorcycles,  
+So that I can access my vehicle information.
 
-## Garage Management
+As a user,  
+I want to update motorcycle details,  
+So that my information remains accurate.
 
-- Add motorcycles
-- Edit motorcycle information
-- Delete motorcycles
-- Search motorcycles
-- View owned motorcycles
-
----
-
-## Maintenance Management
-
-- Create maintenance records
-- Edit maintenance records
-- Delete maintenance records
-- Associate maintenance with motorcycles
-- View maintenance history
+As a user,  
+I want to delete a motorcycle,  
+So that I can remove information I no longer need.
 
 ---
 
-## Expense Management
+## Maintenance
 
-- Record expenses
-- Categorize expenses
-- Update expenses
-- Delete expenses
-- Associate expenses with motorcycles
+As a user,  
+I want to record maintenance information,  
+So that I can keep a history of work performed on my motorcycle.
+
+As a user,  
+I want to view and update maintenance records,  
+So that my maintenance history remains accurate.
+
+---
+
+## Expenses
+
+As a user,  
+I want to record motorcycle-related expenses,  
+So that I can track how much I spend on my motorcycle.
+
+As a user,  
+I want to categorize expenses,  
+So that different types of spending can be organized.
 
 ---
 
 ## AI Diagnosis
 
-- Accept natural language symptom descriptions
-- Generate AI-powered motorcycle diagnosis
-- Display severity level
-- Display confidence score
-- Display possible causes
-- Display recommended actions
+As a user,  
+I want to describe a motorcycle problem in natural language,  
+So that I can receive an AI-generated diagnosis.
+
+As a user,  
+I want to receive possible causes and recommended actions,  
+So that the response is useful and actionable.
+
+As a user,  
+I want the AI response to contain structured information,  
+So that the frontend can display diagnosis results consistently.
 
 ---
 
-## User Interface
+# 6. Functional Requirements
 
-- Responsive layout
-- Modern dashboard
-- Sidebar navigation
-- Interactive forms
-- Confirmation dialogs
-- Toast notifications
+## 6.1 User Authentication
 
----
+The system must allow users to:
 
-# 7. Non-Functional Requirements
+- Register with a name, email, and password
+- Log in using valid credentials
+- Receive a JWT after successful authentication
+- Access authenticated user information
+- Access protected resources only after JWT verification
 
-- Responsive Design
-- Secure Authentication
-- RESTful API Architecture
-- Cloud Database
-- Production Deployment
-- Fast Response Time
-- Environment Variable Protection
-- Modular Code Structure
-- Maintainable Components
+### Password Security
 
----
+The system must:
 
-# 8. Technology Stack
+- Hash passwords using bcrypt before storing them
+- Compare the entered password with the stored password hash during login
+- Never store the original password directly in MongoDB
 
-## Frontend
+### Authentication Flow
 
-- React
-- Vite
-- Tailwind CSS
-- React Router
-- Axios
-- Framer Motion
-- Recharts
-- Lucide React
-
----
-
-## Backend
-
-- Node.js
-- Express.js
-
----
-
-## Database
-
-- MongoDB Atlas
-- Mongoose
-
----
-
-## Authentication
-
-- JWT
-- Bcrypt
-
----
-
-## Artificial Intelligence
-
-- Google Gemini API
-
----
-
-## Deployment
-
-- Vercel
-- Render
-- MongoDB Atlas
-
----
-
-# 9. Success Criteria
-
-Revion is considered successful if users can:
-
-- Register and log in successfully.
-- Securely access protected pages.
-- Add, update, and delete motorcycles.
-- Record maintenance history.
-- Track motorcycle expenses.
-- Receive AI-generated diagnostic suggestions.
-- Use the application across desktop and mobile devices.
-- Access the deployed application without local setup.
-
----
-
-# 10. Future Enhancements
-
-Potential future improvements include:
-
-- Maintenance reminders
-- Predictive maintenance recommendations
-- Motorcycle health score
-- Expense analytics dashboard
-- Image uploads for motorcycles
-- Mechanic locator
-- Push notifications
-- AI maintenance scheduling
-- Community discussion platform
-- Multi-language support
-
----
-
-# 11. Assumptions
-
-- Users have internet connectivity.
-- Google Gemini API is available.
-- MongoDB Atlas is operational.
-- Users understand that AI-generated diagnoses are informational and should not replace professional mechanical inspection.
-
----
-
-# 12. Constraints
-
-- AI responses depend on Google Gemini API availability.
-- Free-tier deployment services may introduce cold starts.
-- AI response quality depends on user-provided descriptions.
-- API rate limits may affect response times.
-- Internet connectivity is required for all application features.
-
----
-
-# End of Document
+```text
+User Registration
+       │
+       ▼
+Validate Input
+       │
+       ▼
+Check Existing User
+       │
+       ▼
+bcrypt Password Hashing
+       │
+       ▼
+Create User in MongoDB
+       │
+       ▼
+Return Authentication Response
