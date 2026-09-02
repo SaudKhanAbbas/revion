@@ -3,190 +3,496 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-black)
 
-
 # Revion
 
-> Motorcycle management platform built with React, Node.js, and MongoDB, featuring AI-powered diagnostics using Google Gemini.
+> A full-stack motorcycle management platform built with React, Node.js, Express, and MongoDB, with AI-powered motorcycle diagnostics using the Google Gemini API.
 
-Revion is a full-stack motorcycle management platform built for riders to manage their motorcycles, maintenance records, expenses, and AI-powered diagnostics from a single dashboard.
+Revion is a full-stack application built to help motorcycle owners manage their motorcycles, maintenance records, expenses, and basic diagnostic information from one place.
+
+The application follows a client-server architecture. The React frontend communicates with a REST API built using Express, while MongoDB stores application data. Google Gemini is integrated as an external AI service for motorcycle diagnosis.
 
 **Live Demo:** https://revion-seven.vercel.app/
-
 
 ---
 
 ## Features
 
 ### Authentication
-- User signup and login using JWT authentication
-- Protected routes
-- Persistent login using local storage
 
-### Garage
+- User registration and login
+- Password hashing with bcrypt
+- JWT issuance during login
+- JWT verification on protected backend routes
+- Persistent authentication using local storage
+- Axios interceptor that automatically attaches the Bearer token to authenticated API requests
+
+### Motorcycle Garage
+
 - Add motorcycles
-- Edit motorcycle details
+- View owned motorcycles
+- View individual motorcycle details
+- Update motorcycle information
 - Delete motorcycles
 - Search motorcycles by manufacturer or model
 
-### Maintenance
-- Record maintenance history
-- Update maintenance logs
+### Maintenance Tracking
+
+- Create maintenance records
+- View maintenance history
+- Update maintenance records
 - Delete maintenance records
-- View service history for each motorcycle
+- Associate maintenance records with motorcycles and their owners
 
-### Expenses
-- Track motorcycle-related expenses
+### Expense Tracking
+
+- Record motorcycle-related expenses
 - Categorize expenses
-- Edit and delete expense records
+- Update expense records
+- Delete expenses
+- Associate expenses with motorcycles and their owners
 
-### AI Diagnosis
-- Describe motorcycle issues in natural language
-- AI-powered diagnosis using Google Gemini
-- Possible causes
-- Recommended actions
-- Severity level
-- Confidence score
+### AI Motorcycle Diagnosis
 
----
+- Describe motorcycle symptoms in natural language
+- Send the symptom description to the backend
+- Generate a diagnosis using Google Gemini
+- Return structured JSON instead of unstructured text
+- Display a diagnosis, possible causes, recommendations, severity, and confidence score
 
-## Tech Stack
+The Gemini prompt instructs the model to return:
 
-### Frontend
-- React 19
-- Vite
-- Tailwind CSS
-- React Router
-- Axios
-- Framer Motion
-- Recharts
-- Lucide React
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB Atlas
-- Mongoose
-- JWT Authentication
-- Google Gemini API
-
-### Deployment
-- Frontend: Vercel
-- Backend: Render
-- Database: MongoDB Atlas
+- Exactly 3 possible causes
+- Exactly 3 recommendations
+- A severity of `Low`, `Medium`, or `High`
+- A confidence score between `0` and `100`
 
 ---
 
-## Screenshots
-
-### Landing Page & Authentication
-
-<img width="1898" height="1022" alt="Landing Page" src="https://github.com/user-attachments/assets/5fc17d1c-26cf-43b1-949c-b4b5318f6d82" />
-
-<img width="1890" height="1015" alt="Authentication" src="https://github.com/user-attachments/assets/d80dfa79-d47d-4ec0-8de9-78cddee48e60" />
-
----
-
-### Dashboard
-
-<img width="1893" height="1032" alt="Dashboard" src="https://github.com/user-attachments/assets/098e04d5-6f53-4244-8841-49775d7a4e85" />
-
----
-
-### Garage
-
-<img width="1571" height="986" alt="Garage" src="https://github.com/user-attachments/assets/64277300-0c43-4962-9e7f-e420abb67153" />
-
----
-
-### AI Diagnosis
-
-<img width="1896" height="1031" alt="AI Diagnosis" src="https://github.com/user-attachments/assets/1068f886-744d-4718-9de4-5056a446dccb" />
-
----
-
-## Project Structure
+## Architecture
 
 ```text
-client/
-│── src/
-│   ├── api/
-│   ├── components/
-│   ├── context/
-│   ├── layouts/
-│   ├── pages/
-│   └── utils/
+User
+  │
+  ▼
+React Frontend
+  │
+  │ HTTPS / REST API Requests
+  ▼
+Express.js Backend
+  │
+  ├───────────────► MongoDB Atlas
+  │                 Users
+  │                 Motorcycles
+  │                 Maintenance Records
+  │                 Expenses
+  │
+  └───────────────► Google Gemini API
+                    AI Diagnosis
+Request Flow
+User Action
+   │
+   ▼
+React Component
+   │
+   ▼
+Axios Request
+   │
+   ▼
+Express Route
+   │
+   ▼
+Authentication Middleware
+   │
+   ▼
+Controller / Business Logic
+   │
+   ├──────────► MongoDB
+   │
+   └──────────► Google Gemini API
+   │
+   ▼
+JSON Response
+   │
+   ▼
+React State Update
+Concepts Implemented
+Client-Side Routing
 
-server/
-│── src/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   └── routes/
-```
+React Router handles navigation between:
 
----
+Landing page
+Login
+Signup
+Dashboard
+Garage
+Maintenance
+Expenses
+AI Diagnosis
+Not Found page
 
-## Getting Started
+Implementation: client/src/main.jsx and client/src/App.jsx
 
-Clone the repository:
+RESTful API Design
 
-```bash
+The backend uses resource-based REST endpoints.
+
+POST   /api/auth/register
+POST   /api/auth/login
+
+GET    /api/dashboard
+
+GET    /api/motorcycles
+POST   /api/motorcycles
+GET    /api/motorcycles/:id
+PUT    /api/motorcycles/:id
+DELETE /api/motorcycles/:id
+
+GET    /api/maintenance
+POST   /api/maintenance
+PUT    /api/maintenance/:id
+DELETE /api/maintenance/:id
+
+GET    /api/expenses
+POST   /api/expenses
+PUT    /api/expenses/:id
+DELETE /api/expenses/:id
+
+POST   /api/diagnosis
+
+Implementation: server/src/routes/
+
+Authentication and Middleware
+
+Authentication is implemented using JWT.
+
+Login Request
+   ↓
+Find User in MongoDB
+   ↓
+bcrypt.compare()
+   ↓
+jwt.sign()
+   ↓
+JWT Returned to Frontend
+   ↓
+Token Stored in localStorage
+   ↓
+Axios Adds Authorization Header
+   ↓
+Express protect Middleware
+   ↓
+jwt.verify()
+   ↓
+Authenticated Request
+
+JWT issuance: server/src/controllers/auth.controller.js
+
+JWT verification: server/src/middleware/auth.middleware.js
+
+Frontend token handling: client/src/api/api.js
+
+Password Hashing
+
+Passwords are never stored directly.
+
+During registration:
+
+Password
+   ↓
+bcrypt.hash()
+   ↓
+Hashed Password
+   ↓
+MongoDB
+
+During login:
+
+Entered Password + Stored Hash
+   ↓
+bcrypt.compare()
+   ↓
+Authentication Result
+
+Implementation: server/src/controllers/auth.controller.js
+
+HTTP Status Codes and Server-Side Error Handling
+
+The backend returns appropriate HTTP responses for different outcomes.
+
+Examples include:
+
+200 - Successful request
+201 - Resource created
+400 - Invalid or missing input
+401 - Unauthorized request
+404 - Resource not found
+500 - Internal server error
+
+Controllers use try/catch blocks to handle server and database errors without crashing the application.
+
+CRUD Operations with MongoDB
+
+Revion implements Create, Read, Update, and Delete operations for:
+
+Motorcycles
+Maintenance records
+Expenses
+Create → POST
+Read   → GET
+Update → PUT
+Delete → DELETE
+
+Implementation: server/src/controllers/
+
+MongoDB Schema Modeling
+
+The application uses Mongoose schemas to define the structure of:
+
+Users
+Motorcycles
+Maintenance records
+Expenses
+
+The schemas include validation such as:
+
+Required fields
+Unique email addresses
+Minimum password length
+Enumerated expense categories
+Default values
+Automatic timestamps
+
+Implementation: server/src/models/
+
+Referencing Relationships in MongoDB
+
+Revion uses referenced relationships between collections.
+
+Examples:
+
+User
+ └── owns ──► Motorcycle
+
+Motorcycle
+ └── has ──► Maintenance Records
+
+Motorcycle
+ └── has ──► Expenses
+
+Mongoose ObjectId references connect:
+
+Motorcycle.owner → User
+
+Maintenance.motorcycle → Motorcycle
+Maintenance.owner      → User
+
+Expense.motorcycle → Motorcycle
+Expense.owner      → User
+
+This allows related data to be modeled without embedding all records inside one document.
+
+LLM API Integration
+
+The AI diagnosis feature integrates the backend with the Google Gemini API.
+
+User Symptom
+   ↓
+Diagnosis Page
+   ↓
+Axios POST Request
+   ↓
+Express Route
+   ↓
+JWT Middleware
+   ↓
+Diagnosis Controller
+   ↓
+Gemini Service
+   ↓
+Google Gemini API
+   ↓
+Structured JSON Response
+   ↓
+Diagnosis Display
+
+Implementation: server/src/services/gemini.service.js
+
+The backend uses async/await to wait for the external API response before processing and returning the result.
+
+Prompt Engineering and Structured Output
+
+The diagnosis service uses a specific prompt to control the model's role and output format.
+
+The prompt:
+
+Defines the AI as a senior motorcycle mechanic
+Includes the user's symptom description
+Requests JSON-only output
+Defines the required response fields
+Restricts diagnosis length
+Requires exactly 3 possible causes
+Requires exactly 3 recommendations
+Restricts confidence to a 0-100 range
+Restricts severity to Low, Medium, or High
+
+The Gemini API is also configured with:
+
+responseMimeType: application/json
+
+The returned JSON is parsed before being sent back to the frontend.
+
+Implementation: server/src/services/gemini.service.js
+
+Async API Communication
+
+The frontend uses Axios for asynchronous API communication.
+
+A centralized API instance:
+
+Reads the API URL from VITE_API_URL
+Falls back to the local backend during development
+Adds JWT tokens using a request interceptor
+Sends requests to the Express backend
+
+Implementation: client/src/api/api.js
+
+Environment Variables and Secrets Management
+
+Sensitive configuration is kept outside the source code.
+
+Backend environment variables:
+
+PORT
+MONGO_URI
+JWT_SECRET
+GEMINI_API_KEY
+
+Frontend environment variable:
+
+VITE_API_URL
+
+The Gemini API key and JWT secret are loaded through environment variables rather than being hardcoded in the repository.
+
+Tech Stack
+Frontend
+React 19
+Vite
+React Router
+Axios
+Tailwind CSS
+Framer Motion
+Recharts
+Lucide React
+React Hot Toast
+Backend
+Node.js
+Express.js
+MongoDB Atlas
+Mongoose
+JWT
+bcrypt
+Google Gemini API
+Deployment
+Frontend: Vercel
+Backend: Render
+Database: MongoDB Atlas
+
+
+Project Structure
+revion/
+│
+├── client/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── styles/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   └── package.json
+│
+├── server/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── app.js
+│   │   └── server.js
+│   │
+│   └── package.json
+│
+├── docs/
+│   ├── PRD.md
+│   ├── HLD.md
+│   └── LLD.md
+│
+├── README.md
+└── LICENSE
+Getting Started
+Clone the Repository
 git clone https://github.com/SaudKhanAbbas/revion.git
 cd revion
-```
-
-### Client
-
-```bash
+Client
 cd client
 npm install
 npm run dev
-```
+Server
 
-### Server
+Open another terminal:
 
-```bash
 cd server
 npm install
 npm run dev
-```
+Local Environment Variables
+Server
 
----
+Create:
 
-## Local Setup
+server/.env
 
-Create the required environment variables for both the client and server before running the application.
+Add:
 
-The client should point to the backend API, while the server requires MongoDB, JWT, and Google Gemini API credentials.
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
+Client
 
----
+Create:
 
-## Live Deployment
+client/.env
 
-- **Frontend:** https://revion-seven.vercel.app/
-- **Backend API:** https://revion-backend.onrender.com/
+Add:
 
----
+VITE_API_URL=http://localhost:5000/api
+Live Deployment
 
-## Future Improvements
+Frontend: https://revion-seven.vercel.app/
 
-- Maintenance reminders
-- Service scheduling
-- Motorcycle health analytics
-- Multiple motorcycles per rider dashboard
-- Image upload support
-- AI maintenance predictions
-- Nearby service center integration
+Backend API: https://revion-backend.onrender.com/
 
----
+Future Improvements
+Maintenance reminders
+Service scheduling
+Improved motorcycle analytics
+Predictive maintenance
+Image upload support
+Nearby mechanic integration
+AI maintenance predictions
+Notifications
+Author
 
-## Author
+Saud Khan Abbas
 
-**Saud Khan Abbas**
+GitHub: https://github.com/SaudKhanAbbas
 
-GitHub — https://github.com/SaudKhanAbbas
-
----
-
-If you found this project interesting, consider leaving a ⭐ on the repository.
+Licensed under the MIT License.
