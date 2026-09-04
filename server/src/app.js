@@ -9,6 +9,7 @@ import motorcycleRoutes from "./routes/motorcycle.routes.js";
 import maintenanceRoutes from "./routes/maintenance.routes.js";
 import expenseRoutes from "./routes/expense.routes.js";
 import diagnosisRoutes from "./routes/diagnosis.routes.js";
+import serviceGuideRoutes from "./routes/serviceGuide.routes.js";
 
 const app = express();
 
@@ -37,5 +38,6 @@ app.use("/api/motorcycles", motorcycleRoutes);
 app.use("/api/maintenance", maintenanceRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/diagnosis", diagnosisRoutes);
+app.use("/api/service-guides", serviceGuideRoutes);
 
 export default app;

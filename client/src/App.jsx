@@ -13,6 +13,7 @@ import GaragePage from "./pages/GaragePage";
 import MaintenancePage from "./pages/MaintenancePage";
 import ExpensesPage from "./pages/ExpensesPage";
 import DiagnosisPage from "./pages/DiagnosisPage";
+import ServiceGuidePage from "./pages/ServiceGuidePage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function PageTransition({ children }) {
@@ -117,6 +118,15 @@ function App() {
           element={
             <PageTransition>
               <DiagnosisPage />
+            </PageTransition>
+          }
+        />
+
+        <Route
+          path="/service-guides"
+          element={
+            <PageTransition>
+              <ServiceGuidePage />
             </PageTransition>
           }
         />

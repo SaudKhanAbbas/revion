@@ -5,6 +5,7 @@ import {
   Wrench,
   Wallet,
   Brain,
+  BookOpen,
 } from "lucide-react";
 
 import { Link, NavLink } from "react-router-dom";
@@ -29,6 +30,11 @@ const links = [
     name: "Expenses",
     path: "/expenses",
     icon: Wallet,
+  },
+  {
+    name: "Service Guide",
+    path: "/service-guides",
+    icon: BookOpen,
   },
   {
     name: "AI Diagnosis",
