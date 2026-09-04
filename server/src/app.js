@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 
+import { requestLogger } from "./middleware/logger.middleware.js";
+
 import authRoutes from "./routes/auth.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import motorcycleRoutes from "./routes/motorcycle.routes.js";
@@ -12,6 +14,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(requestLogger);
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
